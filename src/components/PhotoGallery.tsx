@@ -64,7 +64,7 @@ const galleryData: GalleryItem[] = [
   },
   {
     id: '5',
-    image: 'https://res.cloudinary.com/dyecmgvcy/image/upload/q_auto/v1757837118/Magictouch/IMG_0651_jvwvwd.webp',
+    image: 'https://res.cloudinary.com/dyecmgvcy/image/upload/q_auto:low/v1757837118/Magictouch/IMG_0651_jvwvwd.webp',
     client: 'Monisha',
     style: 'Bold',
     category: 'editorial',
@@ -86,7 +86,7 @@ const galleryData: GalleryItem[] = [
   },
   {
     id: '7',
-    image: 'https://res.cloudinary.com/dyecmgvcy/image/upload/q_auto:eco/v1757495337/Magictouch/V_P09832_copy_mapk7j.webp',
+    image: 'https://res.cloudinary.com/dyecmgvcy/image/upload/q_auto:low/v1757495337/Magictouch/V_P09832_copy_mapk7j.webp',
     client: 'Monica',
     style: 'Artistic',
     category: 'engagement',
