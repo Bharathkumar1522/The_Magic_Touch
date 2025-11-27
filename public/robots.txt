@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://themagictouch.com/sitemap.xml
+Sitemap: https://the-magic-touch-bhavani.vercel.app/sitemap.xml

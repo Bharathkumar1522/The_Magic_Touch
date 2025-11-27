@@ -13,7 +13,7 @@ export function SEOHead({
   description = "Transform your special day with Bhavani Akurathi's expert bridal makeup services in Vijayawada. Specializing in bridal transformations, party makeup, and editorial shoots. Book your consultation today!",
   keywords = "bridal makeup artist Vijayawada, wedding makeup Andhra Pradesh, professional makeup artist India, destination wedding makeup, bridal transformation, party makeup, editorial makeup, best makeup artist Vijayawada, Bhavani Akurathi, The Magic Touch",
   ogImage = "https://res.cloudinary.com/dyecmgvcy/image/upload/q_auto/v1757494544/Magictouch/V_P09800_copy_1_z5lsg5.webp",
-  canonicalUrl = "https://themagictouch.com"
+  canonicalUrl = "https://the-magic-touch-bhavani.vercel.app"
 }: SEOHeadProps) {
 
   useEffect(() => {
