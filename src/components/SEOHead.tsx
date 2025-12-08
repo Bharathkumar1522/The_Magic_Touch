@@ -9,9 +9,9 @@ interface SEOHeadProps {
 }
 
 export function SEOHead({
-  title = "Bhavani Akurathi - The Magic Touch | Best Bridal Makeup Artist in Vijayawada",
-  description = "Transform your special day with Bhavani Akurathi's expert bridal makeup services in Vijayawada. Specializing in bridal transformations, party makeup, and editorial shoots. Book your consultation today!",
-  keywords = "bridal makeup artist Vijayawada, wedding makeup Andhra Pradesh, professional makeup artist India, destination wedding makeup, bridal transformation, party makeup, editorial makeup, best makeup artist Vijayawada, Bhavani Akurathi, The Magic Touch",
+  title = "Bhavani Akurathi - The Magic Touch | Best Bridal Makeup Artist & Hairstylist in Vijayawada",
+  description = "Transform your special day with Bhavani Akurathi's expert bridal makeup services in Vijayawada. Specializing in high-definition bridal makeup, saree draping, hairstyling, party makeup, and editorial shoots. Book your consultation today!",
+  keywords = "bridal makeup artist Vijayawada, wedding makeup Andhra Pradesh, professional makeup artist India, destination wedding makeup, bridal transformation, party makeup, editorial makeup, best makeup artist Vijayawada, Bhavani Akurathi, The Magic Touch, sangeet makeup, mehendi makeup, reception makeup, engagement makeup, fashion photography makeup, airbrush makeup, HD makeup, saree draping, hair styling, Simple makeup, Sareedraping, Hairstylist Vijayawada, Hairstyling, Sareedrapist Vijayawada, Glossy makeup Vijayawada, Skin finish makeup, marriage bridal makeup artist, makeup artist near me, south indian bridal makeup artist, bride makeup",
   ogImage = "https://res.cloudinary.com/dyecmgvcy/image/upload/q_auto/v1757494544/Magictouch/V_P09800_copy_1_z5lsg5.webp",
   canonicalUrl = "https://the-magic-touch-bhavani.vercel.app"
 }: SEOHeadProps) {
@@ -140,7 +140,23 @@ export function SEOHead({
       },
       "priceRange": "$$",
       "servesCuisine": [],
-      "serviceType": ["Bridal Makeup", "Party Makeup", "Editorial Makeup", "Pre-Wedding Makeup", "Saree Draping", "Hair Styling"],
+      "serviceType": [
+        "Bridal Makeup",
+        "Party Makeup",
+        "Editorial Makeup",
+        "Pre-Wedding Makeup",
+        "Saree Draping",
+        "Hair Styling",
+        "Engagement Makeup",
+        "Reception Makeup",
+        "Sangeet Makeup",
+        "Mehendi Makeup",
+        "HD Makeup",
+        "Airbrush Makeup",
+        "Glossy Makeup",
+        "Skin Finish Makeup",
+        "South Indian Bridal Makeup"
+      ],
       "founder": {
         "@type": "Person",
         "name": "Bhavani Akurathi"
@@ -148,7 +164,55 @@ export function SEOHead({
       "sameAs": [
         "https://www.instagram.com/the.magictouch21",
         "https://wa.me/918148200139"
-      ]
+      ],
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Makeup Services",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Bridal Makeup"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Party Makeup"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Editorial Shoots"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Pre-Wedding Sessions"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Saree Draping"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Hair Styling"
+            }
+          }
+        ]
+      }
     };
 
     // Remove existing structured data
