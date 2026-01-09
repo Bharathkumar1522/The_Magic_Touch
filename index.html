@@ -16,7 +16,92 @@
 </head>
 
 <body>
-    <div id="root"></div>
+    <div id="root">
+        <!-- Static Loading Screen -->
+        <style>
+            .static-loader {
+                position: fixed;
+                inset: 0;
+                z-index: 50;
+                background: linear-gradient(to bottom right, #FFFFF0, #F8E4E7, #F5F5DC);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-family: serif;
+            }
+
+            .static-content {
+                text-align: center;
+                opacity: 0;
+                animation: fadeIn 0.8s ease-out forwards;
+            }
+
+            @keyframes fadeIn {
+                to {
+                    opacity: 1;
+                    transform: scale(1);
+                }
+            }
+
+            .static-title {
+                font-size: 3rem;
+                color: #800020;
+                /* maroon */
+                margin-bottom: 0.5rem;
+            }
+
+            .static-subtitle {
+                font-size: 1.5rem;
+                color: rgba(128, 0, 32, 0.8);
+            }
+
+            .static-bar-bg {
+                width: 16rem;
+                height: 0.25rem;
+                background-color: rgba(128, 0, 32, 0.2);
+                border-radius: 9999px;
+                margin: 1.5rem auto;
+                overflow: hidden;
+            }
+
+            .static-bar-fill {
+                height: 100%;
+                background: linear-gradient(to right, #B76E79, #800020);
+                width: 0%;
+                animation: progress 2s ease-out forwards;
+            }
+
+            @keyframes progress {
+                0% {
+                    width: 0%;
+                }
+
+                50% {
+                    width: 60%;
+                }
+
+                100% {
+                    width: 90%;
+                }
+            }
+
+            @media (min-width: 768px) {
+                .static-title {
+                    font-size: 5rem;
+                }
+            }
+        </style>
+        <div class="static-loader">
+            <div class="static-content">
+                <h1 class="static-title">Bhavani Akurathi</h1>
+                <p class="static-subtitle">The Magic Touch</p>
+                <div class="static-bar-bg">
+                    <div class="static-bar-fill"></div>
+                </div>
+                <p style="color: rgba(128,0,32,0.7);">Loading beauty...</p>
+            </div>
+        </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
 </body>
 

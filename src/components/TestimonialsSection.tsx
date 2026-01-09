@@ -52,7 +52,7 @@ export function TestimonialsSection() {
   };
 
   return (
-    <section className="py-20 px-6 bg-gradient-to-b from-soft-blush to-champagne">
+    <section id="testimonials" className="py-16 md:py-24 px-4 md:px-6 bg-gradient-to-b from-soft-blush to-champagne">
       <div className="max-w-5xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl mb-6 text-deep-maroon">
@@ -117,9 +117,8 @@ export function TestimonialsSection() {
               <button
                 key={index}
                 onClick={() => setCurrentTestimonial(index)}
-                className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                  index === currentTestimonial ? 'bg-rose-gold scale-125' : 'bg-rose-gold/40'
-                }`}
+                className={`w-3 h-3 rounded-full transition-all duration-300 ${index === currentTestimonial ? 'bg-rose-gold scale-125' : 'bg-rose-gold/40'
+                  }`}
               />
             ))}
           </div>

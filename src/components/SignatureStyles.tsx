@@ -11,7 +11,7 @@ const styles = [
     description: "Statement-making looks with striking eyes and bold features for brides who want to make an unforgettable impression.",
     image: "https://res.cloudinary.com/dyecmgvcy/image/upload/q_auto/v1757498591/Magictouch/IMG-20250910-WA0016_iywybp.webp"
   },
-    {
+  {
     name: "Minimalistic Beauty",
     description: "Less is more approach focusing on flawless skin and subtle enhancements that create an ethereal, understated elegance.",
     image: "https://res.cloudinary.com/dyecmgvcy/image/upload/q_auto/v1757495331/Magictouch/IMG-20250909-WA0012_px01qk.webp"
@@ -32,7 +32,7 @@ const styles = [
 
 export function SignatureStyles() {
   return (
-    <section className="py-20 px-6 bg-gradient-to-b from-ivory to-soft-blush">
+    <section id="styles" className="py-16 md:py-24 px-4 md:px-6 bg-gradient-to-b from-ivory to-soft-blush">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl mb-4 text-deep-maroon">
@@ -48,7 +48,7 @@ export function SignatureStyles() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {styles.map((style, index) => (
-            <div 
+            <div
               key={index}
               className="bg-white/60 backdrop-blur-sm rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-500 hover:-translate-y-2 group"
             >

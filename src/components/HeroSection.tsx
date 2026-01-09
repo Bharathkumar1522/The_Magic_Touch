@@ -8,17 +8,17 @@ const carouselImages = [
   {
     url: "https://res.cloudinary.com/dyecmgvcy/image/upload/q_auto/v1757494544/Magictouch/V_P09800_copy_1_z5lsg5.webp",
     title: "Timeless Elegance",
-    subtitle: "Creating your perfect bridal look"
+    subtitle: "South Indian Bridal Makeup Specialist"
   },
   {
-    url: "https://res.cloudinary.com/dyecmgvcy/image/upload/q_auto/v1757498585/Magictouch/IMG-20250910-WA0029_rxsb5b.webp",
+    url: "https://res.cloudinary.com/dyecmgvcy/image/upload/q_auto/v1767937417/Magictouch/DSC04742_aap51g.webp",
     title: "Bridal Transformations",
-    subtitle: "Enhancing your natural beauty"
+    subtitle: "Glossy, HD & Airbrush Finish for your Big Day"
   },
   {
     url: "https://res.cloudinary.com/dyecmgvcy/image/upload/q_auto/v1757494807/Magictouch/WhatsApp_Image_2025-09-08_at_08.41.20_b59b49d6_fq6qdm.webp",
     title: "Wedding Day Magic",
-    subtitle: "Making every moment picture perfect"
+    subtitle: "Destination Weddings & On-Location Services"
   }
 ];
 
@@ -50,7 +50,7 @@ export function HeroSection() {
 
   useEffect(() => {
     if (!isAutoPlaying) return;
-    
+
     const interval = setInterval(nextSlide, 5000);
     return () => clearInterval(interval);
   }, [nextSlide, isAutoPlaying]);
@@ -77,35 +77,35 @@ export function HeroSection() {
               loading="eager"
               fetchPriority="high"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-black/30" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/30" />
           </motion.div>
         </AnimatePresence>
       </div>
 
       {/* Hero Content */}
       <div className="absolute inset-0 flex items-center justify-center">
-        <motion.div 
+        <motion.div
           className="text-center text-white px-4 sm:px-6 max-w-5xl"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.3 }}
         >
-          <motion.div 
-            className="mb-6"
+          <motion.div
+            className="mb-6 drop-shadow-lg"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.5 }}
           >
-            <h1 className="signature-name text-4xl sm:text-6xl md:text-7xl lg:text-8xl text-white mb-2 leading-tight">
+            <h1 className="signature-name text-4xl sm:text-6xl md:text-7xl lg:text-8xl text-white mb-2 leading-tight drop-shadow-md">
               Bhavani Akurathi
             </h1>
-            <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-white/90 font-serif italic">
+            <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-white/95 font-serif italic drop-shadow-md">
               The Magic Touch
             </p>
           </motion.div>
-          
-          <motion.p 
-            className="text-base sm:text-lg md:text-xl lg:text-2xl mb-8 opacity-90 font-light max-w-3xl mx-auto"
+
+          <motion.p
+            className="text-base sm:text-lg md:text-xl lg:text-2xl mb-8 opacity-95 font-light max-w-3xl mx-auto leading-relaxed drop-shadow-md"
             key={currentSlide}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -113,14 +113,14 @@ export function HeroSection() {
           >
             {currentImage.subtitle}
           </motion.p>
-          
+
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.8 }}
           >
-            <Button 
-              size="lg" 
+            <Button
+              size="lg"
               onClick={handleBookConsultation}
               className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white border-white/30 px-6 sm:px-8 py-3 rounded-full transition-all duration-300 hover:scale-105 cursor-pointer text-sm sm:text-base"
             >
@@ -140,7 +140,7 @@ export function HeroSection() {
       >
         <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
       </motion.button>
-      
+
       <motion.button
         onClick={nextSlide}
         className="hidden sm:block absolute right-4 md:right-6 top-1/2 -translate-y-1/2 bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white p-2 md:p-3 rounded-full transition-all duration-300 hover:scale-110"
@@ -157,9 +157,8 @@ export function HeroSection() {
           <motion.button
             key={index}
             onClick={() => handleSlideClick(index)}
-            className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300 ${
-              index === currentSlide ? 'bg-white' : 'bg-white/50'
-            }`}
+            className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300 ${index === currentSlide ? 'bg-white' : 'bg-white/50'
+              }`}
             whileHover={{ scale: 1.2 }}
             whileTap={{ scale: 0.9 }}
             aria-label={`Go to slide ${index + 1}`}

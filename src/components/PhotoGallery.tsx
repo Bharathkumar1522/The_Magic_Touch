@@ -75,10 +75,10 @@ const galleryData: GalleryItem[] = [
   },
   {
     id: '6',
-    image: 'https://res.cloudinary.com/dyecmgvcy/image/upload/q_auto/v1757495327/Magictouch/IMG-20250909-WA0006_c3wep0.webp',
+    image: 'https://res.cloudinary.com/dyecmgvcy/image/upload/q_auto/a_270/v1767937418/Magictouch/DSC04747_m7ae4f.webp',
     client: 'Janani',
     style: 'Vintage',
-    category: 'reception',
+    category: 'engagement',
     location: 'Historic Manor',
     duration: '3 hours',
     description: 'Timeless vintage-inspired bridal makeup with classic red lips and soft winged liner for a historic manor wedding.',
@@ -121,12 +121,18 @@ export function PhotoGallery() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedImage, setSelectedImage] = useState<GalleryItem | null>(null);
 
-  const filteredItems = selectedCategory === 'all' 
-    ? galleryData 
+  // Preload image helper
+  const preloadImage = (url: string) => {
+    const img = new Image();
+    img.src = url.replace('/upload/', '/upload/w_1200/');
+  };
+
+  const filteredItems = selectedCategory === 'all'
+    ? galleryData
     : galleryData.filter(item => item.category === selectedCategory);
 
   return (
-    <section className="py-12 md:py-20 bg-gradient-to-b from-soft-blush to-cream">
+    <section className="py-16 md:py-24 bg-gradient-to-b from-soft-blush to-cream">
       <div className="container mx-auto px-4">
         {/* Header */}
         <motion.div
@@ -136,11 +142,11 @@ export function PhotoGallery() {
           transition={{ duration: 0.8 }}
           className="text-center mb-8 md:mb-16"
         >
-          <h2 className="mb-4 md:mb-6 text-deep-maroon">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl mb-4 md:mb-6 text-deep-maroon">
             Gallery
           </h2>
           <p className="max-w-2xl mx-auto text-muted-foreground text-sm md:text-base px-4">
-            Discover our portfolio of beautiful transformations. Each look is carefully crafted 
+            Discover our portfolio of beautiful transformations. Each look is carefully crafted
             to enhance natural beauty and create unforgettable moments.
           </p>
         </motion.div>
@@ -157,7 +163,7 @@ export function PhotoGallery() {
             <Filter className="w-4 h-4 text-deep-maroon mr-2" />
             <span className="text-sm text-deep-maroon">Filter by category</span>
           </div>
-          
+
           {/* Mobile: Horizontal scroll */}
           <div className="md:hidden overflow-x-auto pb-2">
             <div className="flex gap-3 px-4 min-w-max">
@@ -168,11 +174,10 @@ export function PhotoGallery() {
                   variant={selectedCategory === category.id ? "default" : "outline"}
                   onClick={() => setSelectedCategory(category.id)}
                   size="sm"
-                  className={`transition-all duration-300 whitespace-nowrap text-xs ${
-                    selectedCategory === category.id
-                      ? 'bg-deep-maroon text-ivory shadow-lg'
-                      : 'bg-transparent border-deep-maroon text-deep-maroon hover:bg-deep-maroon hover:text-ivory'
-                  }`}
+                  className={`transition-all duration-300 whitespace-nowrap text-xs ${selectedCategory === category.id
+                    ? 'bg-deep-maroon text-ivory shadow-lg'
+                    : 'bg-transparent border-deep-maroon text-deep-maroon hover:bg-deep-maroon hover:text-ivory'
+                    }`}
                 >
                   {category.label}
                 </Button>
@@ -188,11 +193,10 @@ export function PhotoGallery() {
                 key={category.id}
                 variant={selectedCategory === category.id ? "default" : "outline"}
                 onClick={() => setSelectedCategory(category.id)}
-                className={`transition-all duration-300 ${
-                  selectedCategory === category.id
-                    ? 'bg-deep-maroon text-ivory shadow-lg'
-                    : 'bg-transparent border-deep-maroon text-deep-maroon hover:bg-deep-maroon hover:text-ivory'
-                }`}
+                className={`transition-all duration-300 ${selectedCategory === category.id
+                  ? 'bg-deep-maroon text-ivory shadow-lg'
+                  : 'bg-transparent border-deep-maroon text-deep-maroon hover:bg-deep-maroon hover:text-ivory'
+                  }`}
               >
                 {category.label}
               </Button>
@@ -217,14 +221,15 @@ export function PhotoGallery() {
               transition={{ duration: 0.6, delay: index * 0.1 }}
               className="relative group cursor-pointer overflow-hidden rounded-lg lg:rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
               onClick={() => setSelectedImage(item)}
+              onMouseEnter={() => preloadImage(item.image)}
             >
               <div className="relative overflow-hidden aspect-[4/5]">
                 <img
-                  src={item.image}
+                  src={item.image.replace('/upload/', '/upload/w_800/')}
                   alt={`${item.client} - ${item.style}`}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
-                
+
                 {/* Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-deep-maroon/70 via-transparent to-transparent opacity-60 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300">
                   <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 text-white">
@@ -236,7 +241,7 @@ export function PhotoGallery() {
                 </div>
 
                 {/* Category Badge */}
-                <Badge 
+                <Badge
                   className="absolute top-3 left-3 bg-white/90 text-deep-maroon border-0 text-xs"
                 >
                   {item.category}
@@ -253,7 +258,7 @@ export function PhotoGallery() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-50 flex items-center justify-center p-2 md:p-4 bg-black/80 backdrop-blur-sm"
+              className="fixed inset-0 z-50 flex items-center justify-center p-2 md:p-4 bg-black/90"
               onClick={() => setSelectedImage(null)}
             >
               <motion.div
@@ -276,11 +281,12 @@ export function PhotoGallery() {
 
                 <div className="flex flex-col md:grid md:grid-cols-2 gap-0 overflow-y-auto max-h-[95vh] md:max-h-[90vh]">
                   {/* Image */}
-                  <div className="relative md:min-h-[400px]">
+                  <div className="relative md:min-h-[400px] bg-soft-blush/20 aspect-[4/5] md:aspect-auto h-full">
                     <img
-                      src={selectedImage.image}
+                      src={selectedImage.image.replace('/upload/', '/upload/w_1200/')}
                       alt={`${selectedImage.client} - ${selectedImage.style}`}
-                      className="w-full h-48 md:h-full object-cover"
+                      className="w-full h-full object-cover absolute inset-0 md:relative"
+                      loading="eager"
                     />
                   </div>
 
@@ -297,7 +303,7 @@ export function PhotoGallery() {
                       <h3 className="text-deep-maroon mb-1 md:mb-2 text-lg md:text-xl">
                         {selectedImage.client}
                       </h3>
-                      
+
                       <h4 className="text-dusty-rose mb-4 md:mb-6 text-sm md:text-base">
                         {selectedImage.style} Style
                       </h4>

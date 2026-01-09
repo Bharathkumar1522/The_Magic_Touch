@@ -8,31 +8,29 @@ import { Card, CardContent } from './ui/card';
 export function ContactSection() {
   const [formData, setFormData] = useState({
     name: '',
-    email: '',
     phone: '',
     message: ''
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Create WhatsApp message
     const whatsappNumber = '918148200139'; // Phone number without spaces or special characters
     const message = `New Contact Form Submission:
     
 Name: ${formData.name}
-Email: ${formData.email}
 Phone: ${formData.phone}
 Message: ${formData.message}`;
-    
+
     const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
-    
+
     // Open WhatsApp
     window.open(whatsappUrl, '_blank');
-    
+
     // Reset form
-    setFormData({ name: '', email: '', phone: '', message: '' });
-    
+    setFormData({ name: '', phone: '', message: '' });
+
     // Show success message
     alert('Thank you for your message! Redirecting to WhatsApp to send your inquiry.');
   };
@@ -45,7 +43,7 @@ Message: ${formData.message}`;
   };
 
   return (
-    <section className="py-20 px-6 bg-gradient-to-b from-ivory to-cream">
+    <section className="py-16 md:py-24 px-4 md:px-6 bg-gradient-to-b from-ivory to-cream">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl mb-4 text-deep-maroon">
@@ -81,21 +79,7 @@ Message: ${formData.message}`;
                     placeholder="Your beautiful name"
                   />
                 </div>
-                <div>
-                  <label htmlFor="email" className="block text-deep-maroon mb-2">
-                    Email Address *
-                  </label>
-                  <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                    className="border-rose-gold/30 focus:border-rose-gold"
-                    placeholder="your@email.com"
-                  />
-                </div>
+
                 <div>
                   <label htmlFor="phone" className="block text-deep-maroon mb-2">
                     Phone Number
@@ -125,7 +109,7 @@ Message: ${formData.message}`;
                     placeholder="Share details about your wedding date, style preferences, and any special requirements..."
                   />
                 </div>
-                <Button 
+                <Button
                   type="submit"
                   className="w-full bg-gradient-to-r from-rose-gold to-deep-maroon hover:from-deep-maroon hover:to-rose-gold text-white py-3 rounded-full transition-all duration-300"
                 >
@@ -134,60 +118,60 @@ Message: ${formData.message}`;
               </form>
             </CardContent>
           </Card>
-{/* Contact Information */}
-<div className="space-y-8">
-  <Card className="bg-white/70 backdrop-blur-sm border-rose-gold/30">
-    <CardContent className="p-8">
-      <h3 className="text-2xl mb-6 text-deep-maroon">
-        Contact Information
-      </h3>
-      <div className="space-y-4">
-        {/* Phone */}
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 bg-gradient-to-br from-blush-pink to-rose-gold rounded-full flex items-center justify-center flex-shrink-0">
-            <Phone className="w-6 h-6 text-deep-maroon" />
-          </div>
-          <div>
-            <p className="font-medium text-deep-maroon">Phone</p>
-            <a
-              href="tel:+918148200139"
-              className="text-deep-maroon/70 hover:text-deep-maroon transition-colors duration-200 break-all select-all"
-            >
-              +91 81482 00139
-            </a>
-          </div>
-        </div>
-        {/* Email */}
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 bg-gradient-to-br from-blush-pink to-rose-gold rounded-full flex items-center justify-center flex-shrink-0">
-            <Mail className="w-6 h-6 text-deep-maroon" />
-          </div>
-          <div className="min-w-0 flex flex-col">
-            <p className="font-medium text-deep-maroon">Email</p>
-            <a
-              href="mailto:themagictouch443@gmail.com"
-              className="text-deep-maroon/70 whitespace-normal break-all select-all"
-            >
-              themagictouch443@gmail.com
-            </a>
-          </div>
-        </div>
-        {/* Service Area */}
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 bg-gradient-to-br from-blush-pink to-rose-gold rounded-full flex items-center justify-center flex-shrink-0">
-            <MapPin className="w-6 h-6 text-deep-maroon" />
-          </div>
-          <div>
-            <p className="font-medium text-deep-maroon">Service Area</p>
-            <p className="text-deep-maroon/70 break-normal">
-              Based in Vijayawada<br />
-              Available for travel across India.
-            </p>
-          </div>
-        </div>
-      </div>
-    </CardContent>
-  </Card>
+          {/* Contact Information */}
+          <div className="space-y-8">
+            <Card className="bg-white/70 backdrop-blur-sm border-rose-gold/30">
+              <CardContent className="p-8">
+                <h3 className="text-2xl mb-6 text-deep-maroon">
+                  Contact Information
+                </h3>
+                <div className="space-y-4">
+                  {/* Phone */}
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-gradient-to-br from-blush-pink to-rose-gold rounded-full flex items-center justify-center flex-shrink-0">
+                      <Phone className="w-6 h-6 text-deep-maroon" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-deep-maroon">Phone</p>
+                      <a
+                        href="tel:+918148200139"
+                        className="text-deep-maroon/70 hover:text-deep-maroon transition-colors duration-200 break-all select-all"
+                      >
+                        +91 81482 00139
+                      </a>
+                    </div>
+                  </div>
+                  {/* Email */}
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-gradient-to-br from-blush-pink to-rose-gold rounded-full flex items-center justify-center flex-shrink-0">
+                      <Mail className="w-6 h-6 text-deep-maroon" />
+                    </div>
+                    <div className="min-w-0 flex flex-col">
+                      <p className="font-medium text-deep-maroon">Email</p>
+                      <a
+                        href="mailto:themagictouch443@gmail.com"
+                        className="text-deep-maroon/70 whitespace-normal break-all select-all"
+                      >
+                        themagictouch443@gmail.com
+                      </a>
+                    </div>
+                  </div>
+                  {/* Service Area */}
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-gradient-to-br from-blush-pink to-rose-gold rounded-full flex items-center justify-center flex-shrink-0">
+                      <MapPin className="w-6 h-6 text-deep-maroon" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-deep-maroon">Service Area</p>
+                      <p className="text-deep-maroon/70 break-normal">
+                        Based in Vijayawada<br />
+                        Available for travel across India.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
 
 
             <Card className="bg-white/70 backdrop-blur-sm border-rose-gold/30">
@@ -199,8 +183,8 @@ Message: ${formData.message}`;
                   Message us directly on WhatsApp or follow our latest work
                 </p>
                 <div className="flex space-x-4">
-                  <a 
-                    href="https://wa.me/918148200139?text=Hi! I'm interested in your bridal makeup services. Can we discuss?" 
+                  <a
+                    href="https://wa.me/918148200139?text=Hi! I'm interested in your bridal makeup services. Can we discuss?"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-12 h-12 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center hover:scale-110 transition-transform duration-300 shadow-lg"
@@ -208,8 +192,8 @@ Message: ${formData.message}`;
                   >
                     <MessageCircle className="w-6 h-6 text-white" />
                   </a>
-                  <a 
-                    href="https://www.instagram.com/the.magictouch21?igsh=MW8weWxxNzZwZ2czdQ%3D%3D&utm_source=qr" 
+                  <a
+                    href="https://www.instagram.com/the.magictouch21?igsh=MW8weWxxNzZwZ2czdQ%3D%3D&utm_source=qr"
                     className="w-12 h-12 bg-gradient-to-br from-blush-pink to-rose-gold rounded-full flex items-center justify-center hover:scale-110 transition-transform duration-300"
                     title="Follow on Instagram"
                     target="_blank"
@@ -217,8 +201,8 @@ Message: ${formData.message}`;
                   >
                     <Instagram className="w-6 h-6 text-deep-maroon" />
                   </a>
-                  <a 
-                    href="tel:+918148200139" 
+                  <a
+                    href="tel:+918148200139"
                     className="w-12 h-12 bg-gradient-to-br from-blush-pink to-rose-gold rounded-full flex items-center justify-center hover:scale-110 transition-transform duration-300"
                     title="Call Now"
                   >
