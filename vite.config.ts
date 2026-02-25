@@ -4,5 +4,22 @@ import tailwindcss from '@tailwindcss/vite'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(),tailwindcss()],
+  plugins: [react(), tailwindcss()],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom'],
+          'vendor-animation': ['framer-motion', 'lenis'],
+          'vendor-ui': ['lucide-react', 'embla-carousel-react'],
+        }
+      }
+    },
+    minify: 'terser',
+    terserOptions: {
+      format: {
+        comments: false,
+      },
+    }
+  }
 })

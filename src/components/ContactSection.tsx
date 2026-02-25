@@ -43,7 +43,7 @@ Message: ${formData.message}`;
   };
 
   return (
-    <section className="py-16 md:py-24 px-4 md:px-6 bg-gradient-to-b from-ivory to-cream">
+    <section id="contact" className="py-16 md:py-24 px-4 md:px-6 bg-gradient-to-b from-ivory to-cream content-visibility-auto">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl mb-4 text-deep-maroon">

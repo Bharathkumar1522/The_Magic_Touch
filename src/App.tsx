@@ -3,8 +3,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { LoadingScreen } from './components/LoadingScreen';
 import { SEOHead } from './components/SEOHead';
 import { usePerformance } from './components/hooks/usePerformance';
+import { ReactLenis, useLenis } from 'lenis/react';
 import { Navbar } from './components/Navbar';
 import { HeroSection } from './components/HeroSection';
+import { BackToTop } from './components/BackToTop';
 
 // Lazy load components for better performance
 const SignatureStyles = lazy(() => import('./components/SignatureStyles').then(module => ({ default: module.SignatureStyles })));
@@ -35,146 +37,170 @@ function ComponentSkeleton() {
 
 export default function App() {
   const [isLoadingComplete, setIsLoadingComplete] = useState(false);
-  const [fontsLoaded, setFontsLoaded] = useState(false);
+  const [isReady, setIsReady] = useState(false);
   const performanceMetrics = usePerformance();
 
   useEffect(() => {
-    // Check if fonts are loaded
+    // Check if fonts are loaded using the document.fonts API
     const checkFontsLoaded = async () => {
       try {
         await document.fonts.ready;
-        // Small delay to ensure fonts are properly applied
-        setTimeout(() => {
-          setFontsLoaded(true);
-        }, 300);
       } catch {
-        // Fallback if font loading fails
-        setTimeout(() => {
-          setFontsLoaded(true);
-        }, 1500);
+        // Silently proceed if font API fails or times out
       }
     };
 
-    checkFontsLoaded();
+    // Preload the First Hero Image (LCP Asset)
+    const preloadHeroImage = async () => {
+      return new Promise((resolve) => {
+        const img = new Image();
+        // The primary LCP image from HeroSection with Cloudinary optimizations
+        img.src = "https://res.cloudinary.com/dyecmgvcy/image/upload/f_auto,q_auto,w_1920/v1757494544/Magictouch/V_P09800_copy_1_z5lsg5.webp";
+        img.onload = resolve;
+        img.onerror = resolve; // proceed even if it fails
+      });
+    };
 
-    // Fallback: Force show content after 4 seconds regardless
+    const initializeApp = async () => {
+      // Wait for both critical assets to load before signaling ready
+      await Promise.all([
+        checkFontsLoaded(),
+        preloadHeroImage()
+      ]);
+      setIsReady(true);
+    };
+
+    initializeApp();
+
+    // Fallback: Force ready state after 4 seconds to prevent infinite lock
     const fallbackTimer = setTimeout(() => {
-      if (!isLoadingComplete) {
-        setIsLoadingComplete(true);
-      }
+      setIsReady(true);
     }, 4000);
 
     return () => clearTimeout(fallbackTimer);
-  }, [isLoadingComplete]);
+  }, []);
 
   const handleLoadingComplete = () => {
     setIsLoadingComplete(true);
   };
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-gradient-to-br from-ivory via-soft-blush to-cream">
-      <SEOHead />
-      
-      <AnimatePresence mode="wait">
-        {!isLoadingComplete && (
-          <LoadingScreen 
-            isLoading={fontsLoaded} 
-            onComplete={handleLoadingComplete}
-          />
-        )}
-      </AnimatePresence>
+    <ReactLenis root options={{ lerp: 0.1, duration: 1.5, smoothWheel: true, syncTouch: false, touchMultiplier: 0 }}>
+      {/* App Wrapper */}
+      <div className="app-wrapper flex flex-col min-h-[100dvh]">
+        <SEOHead />
 
-      <AnimatePresence mode="wait">
-        {isLoadingComplete && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-        >
-          <Navbar />
-          
-          <motion.div 
-            id="home"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-          >
-            <HeroSection />
-          </motion.div>
+        <AnimatePresence mode="wait">
+          {!isLoadingComplete && (
+            <LoadingScreen
+              isReady={isReady}
+              onComplete={handleLoadingComplete}
+            />
+          )}
+        </AnimatePresence>
 
-          <Suspense fallback={<ComponentSkeleton />}>
-            <motion.div 
-              id="styles"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.6 }}
-            >
-              <SignatureStyles />
-            </motion.div>
-          </Suspense>
-
-          <Suspense fallback={<ComponentSkeleton />}>
-            <motion.div 
-              id="services"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.6 }}
-            >
-              <ServicesSection />
-            </motion.div>
-          </Suspense>
-
-          <Suspense fallback={<ComponentSkeleton />}>
-            <motion.div 
-              id="gallery"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.6 }}
-            >
-              <PhotoGallery />
-            </motion.div>
-          </Suspense>
-
-          <Suspense fallback={<ComponentSkeleton />}>
-            <motion.div 
-              id="testimonials"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.6 }}
-            >
-              <TestimonialsSection />
-            </motion.div>
-          </Suspense>
-
-          <Suspense fallback={<ComponentSkeleton />}>
-            <motion.div 
-              id="contact"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.6 }}
-            >
-              <ContactSection />
-            </motion.div>
-          </Suspense>
-
-          <Suspense fallback={<ComponentSkeleton />}>
+        <AnimatePresence mode="wait">
+          {isLoadingComplete && (
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.6 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5 }}
+              className="optimize-gpu"
             >
-              <Footer />
+              <Navbar />
+
+              <motion.div
+                id="home"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ type: "spring", stiffness: 50, damping: 20, delay: 0.1 }}
+                className="optimize-gpu"
+              >
+                <HeroSection />
+              </motion.div>
+
+              <Suspense fallback={<ComponentSkeleton />}>
+                <motion.div
+                  id="styles"
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "0px 0px -100px 0px", amount: 0.1 }}
+                  transition={{ type: "spring", stiffness: 60, damping: 20 }}
+                  className="optimize-gpu"
+                >
+                  <SignatureStyles />
+                </motion.div>
+              </Suspense>
+
+              <Suspense fallback={<ComponentSkeleton />}>
+                <motion.div
+                  id="services"
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "0px 0px -100px 0px", amount: 0.1 }}
+                  transition={{ type: "spring", stiffness: 60, damping: 20 }}
+                  className="optimize-gpu"
+                >
+                  <ServicesSection />
+                </motion.div>
+              </Suspense>
+
+              <Suspense fallback={<ComponentSkeleton />}>
+                <motion.div
+                  id="gallery"
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "0px 0px -100px 0px", amount: 0.1 }}
+                  transition={{ type: "spring", stiffness: 60, damping: 20 }}
+                  className="optimize-gpu"
+                >
+                  <PhotoGallery />
+                </motion.div>
+              </Suspense>
+
+              <Suspense fallback={<ComponentSkeleton />}>
+                <motion.div
+                  id="testimonials"
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "0px 0px -100px 0px", amount: 0.1 }}
+                  transition={{ type: "spring", stiffness: 60, damping: 20 }}
+                  className="optimize-gpu"
+                >
+                  <TestimonialsSection />
+                </motion.div>
+              </Suspense>
+
+              <Suspense fallback={<ComponentSkeleton />}>
+                <motion.div
+                  id="contact"
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "0px 0px -100px 0px", amount: 0.1 }}
+                  transition={{ type: "spring", stiffness: 60, damping: 20 }}
+                  className="optimize-gpu"
+                >
+                  <ContactSection />
+                </motion.div>
+              </Suspense>
+
+              <Suspense fallback={<ComponentSkeleton />}>
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "0px 0px -100px 0px", amount: 0.1 }}
+                  transition={{ type: "spring", stiffness: 60, damping: 20 }}
+                  className="optimize-gpu"
+                >
+                  <Footer />
+                </motion.div>
+              </Suspense>
+
+              <BackToTop />
             </motion.div>
-          </Suspense>
-        </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+          )}
+        </AnimatePresence>
+      </div>
+    </ReactLenis>
   );
 }

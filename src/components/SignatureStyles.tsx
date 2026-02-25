@@ -1,36 +1,35 @@
 import { ImageWithFallback } from './figma/ImageWithFallback';
+import { memo } from 'react';
 
 const styles = [
   {
     name: "Natural Glam",
     description: "Effortless beauty that enhances your natural features with a radiant, dewy finish perfect for romantic ceremonies.",
-    image: "https://res.cloudinary.com/dyecmgvcy/image/upload/q_auto/v1757495371/Magictouch/WhatsApp_Image_2025-09-10_at_14.38.17_e2171e99_khzagn.webp"
+    image: "https://res.cloudinary.com/dyecmgvcy/image/upload/f_auto,q_auto/v1757495371/Magictouch/WhatsApp_Image_2025-09-10_at_14.38.17_e2171e99_khzagn.webp"
   },
   {
     name: "Bold & Dramatic",
     description: "Statement-making looks with striking eyes and bold features for brides who want to make an unforgettable impression.",
-    image: "https://res.cloudinary.com/dyecmgvcy/image/upload/q_auto/v1757498591/Magictouch/IMG-20250910-WA0016_iywybp.webp"
+    image: "https://res.cloudinary.com/dyecmgvcy/image/upload/f_auto,q_auto/v1757498591/Magictouch/IMG-20250910-WA0016_iywybp.webp"
   },
   {
     name: "Minimalistic Beauty",
     description: "Less is more approach focusing on flawless skin and subtle enhancements that create an ethereal, understated elegance.",
-    image: "https://res.cloudinary.com/dyecmgvcy/image/upload/q_auto/v1757495331/Magictouch/IMG-20250909-WA0012_px01qk.webp"
+    image: "https://res.cloudinary.com/dyecmgvcy/image/upload/f_auto,q_auto/v1757495331/Magictouch/IMG-20250909-WA0012_px01qk.webp"
   },
   {
     name: "Traditional Elegance",
     description: "Classic bridal makeup with timeless appeal, featuring sophisticated techniques that honor tradition while maintaining modern elegance.",
-    image: "https://res.cloudinary.com/dyecmgvcy/image/upload/q_auto/v1757498587/Magictouch/IMG-20250910-WA0026_xt0nfj.webp"
+    image: "https://res.cloudinary.com/dyecmgvcy/image/upload/f_auto,q_auto/v1757498587/Magictouch/IMG-20250910-WA0026_xt0nfj.webp"
   },
   {
     name: "Contemporary Chic",
     description: "Modern, fashion-forward looks that blend current trends with bridal sophistication for the contemporary bride.",
     image: "https://images.unsplash.com/photo-1727988450989-c1aeb120b856?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb250ZW1wb3JhcnklMjBtb2Rlcm4lMjBicmlkYWwlMjBtYWtldXB8ZW58MXx8fHwxNzU2ODA2NDQyfDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
-  },
-
-
+  }
 ];
 
-export function SignatureStyles() {
+export const SignatureStyles = memo(function SignatureStyles() {
   return (
     <section id="styles" className="py-16 md:py-24 px-4 md:px-6 bg-gradient-to-b from-ivory to-soft-blush">
       <div className="max-w-7xl mx-auto">
@@ -73,4 +72,4 @@ export function SignatureStyles() {
       </div>
     </section>
   );
-}
+});

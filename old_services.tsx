@@ -34,7 +34,7 @@ export function ServicesSection() {
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <img
-          src="https://res.cloudinary.com/dyecmgvcy/image/upload/f_auto,q_auto,w_1920/v1767937417/Magictouch/DSC04820_tck5ao.webp"
+          src="https://res.cloudinary.com/dyecmgvcy/image/upload/q_auto,w_1920/v1767937417/Magictouch/DSC04820_tck5ao.webp"
           alt="Background"
           className="w-full h-full object-cover"
           loading="lazy"

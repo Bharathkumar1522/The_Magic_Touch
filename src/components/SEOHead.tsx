@@ -12,7 +12,7 @@ export function SEOHead({
   title = "Bhavani Akurathi - The Magic Touch | Best Bridal Makeup Artist & Hairstylist in Vijayawada",
   description = "Transform your special day with Bhavani Akurathi's expert bridal makeup services in Vijayawada. Specializing in high-definition bridal makeup, saree draping, hairstyling, party makeup, and editorial shoots. Book your consultation today!",
   keywords = "bridal makeup artist Vijayawada, wedding makeup Andhra Pradesh, professional makeup artist India, destination wedding makeup, bridal transformation, party makeup, editorial makeup, best makeup artist Vijayawada, Bhavani Akurathi, The Magic Touch, sangeet makeup, mehendi makeup, reception makeup, engagement makeup, fashion photography makeup, airbrush makeup, HD makeup, saree draping, hair styling, Simple makeup, Sareedraping, Hairstylist Vijayawada, Hairstyling, Sareedrapist Vijayawada, Glossy makeup Vijayawada, Skin finish makeup, marriage bridal makeup artist, makeup artist near me, south indian bridal makeup artist, bride makeup",
-  ogImage = "https://res.cloudinary.com/dyecmgvcy/image/upload/q_auto/v1757494544/Magictouch/V_P09800_copy_1_z5lsg5.webp",
+  ogImage = "https://res.cloudinary.com/dyecmgvcy/image/upload/f_auto,q_auto/v1757494544/Magictouch/V_P09800_copy_1_z5lsg5.webp",
   canonicalUrl = "https://the-magic-touch-bhavani.vercel.app"
 }: SEOHeadProps) {
 
@@ -109,8 +109,8 @@ export function SEOHead({
       "email": "themagictouch443@gmail.com",
       "image": [
         ogImage,
-        "https://res.cloudinary.com/dyecmgvcy/image/upload/q_auto/v1757498585/Magictouch/IMG-20250910-WA0029_rxsb5b.webp",
-        "https://res.cloudinary.com/dyecmgvcy/image/upload/q_auto/v1757494807/Magictouch/WhatsApp_Image_2025-09-08_at_08.41.20_b59b49d6_fq6qdm.webp"
+        "https://res.cloudinary.com/dyecmgvcy/image/upload/f_auto,q_auto/v1757498585/Magictouch/IMG-20250910-WA0029_rxsb5b.webp",
+        "https://res.cloudinary.com/dyecmgvcy/image/upload/f_auto,q_auto/v1757494807/Magictouch/WhatsApp_Image_2025-09-08_at_08.41.20_b59b49d6_fq6qdm.webp"
       ],
       "address": {
         "@type": "PostalAddress",

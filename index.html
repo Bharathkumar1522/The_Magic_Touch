@@ -3,8 +3,20 @@
 
 <head>
     <meta charset="UTF-8" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style"
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&family=Dancing+Script:wght@400;500;600;700&family=Great+Vibes&display=swap&font-display=swap" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&family=Dancing+Script:wght@400;500;600;700&family=Great+Vibes&display=swap&font-display=swap"
+        media="print" onload="this.media='all'" />
+    <noscript>
+        <link rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&family=Dancing+Script:wght@400;500;600;700&family=Great+Vibes&display=swap&font-display=swap" />
+    </noscript>
     <link rel="icon" type="image/svg+xml"
         href="https://res.cloudinary.com/dyecmgvcy/image/upload/t_logo/v1757497071/Magictouch/Gemini_Generated_Image_flt7htflt7htflt7_sotzfh.png" />
+    <meta name="theme-color" content="#8b4a6b" />
     <meta name="google-site-verification" content="tLgMY8nZ-fscdwHDoKbG3PUzYv8ymQcOqrNPC51caeU" />
     <meta name="google-site-verification" content="S2g0ngwgdADeVcUZNvzLvlzHU80JTQHbj-8w7g5VvKw" />
     <meta name="google-site-verification" content="DOnMPq7J_psNBXlNRw-uCeP59OXVSHLWSUlySynZKaE" />
@@ -26,34 +38,9 @@
                 z-index: 50;
                 background: linear-gradient(to bottom right, #FFFFF0, #F8E4E7, #F5F5DC);
                 display: flex;
+                flex-direction: column;
                 align-items: center;
                 justify-content: center;
-                font-family: serif;
-            }
-
-            .static-content {
-                text-align: center;
-                opacity: 0;
-                animation: fadeIn 0.8s ease-out forwards;
-            }
-
-            @keyframes fadeIn {
-                to {
-                    opacity: 1;
-                    transform: scale(1);
-                }
-            }
-
-            .static-title {
-                font-size: 3rem;
-                color: #800020;
-                /* maroon */
-                margin-bottom: 0.5rem;
-            }
-
-            .static-subtitle {
-                font-size: 1.5rem;
-                color: rgba(128, 0, 32, 0.8);
             }
 
             .static-bar-bg {
@@ -61,7 +48,6 @@
                 height: 0.25rem;
                 background-color: rgba(128, 0, 32, 0.2);
                 border-radius: 9999px;
-                margin: 1.5rem auto;
                 overflow: hidden;
             }
 
@@ -85,21 +71,10 @@
                     width: 90%;
                 }
             }
-
-            @media (min-width: 768px) {
-                .static-title {
-                    font-size: 5rem;
-                }
-            }
         </style>
         <div class="static-loader">
-            <div class="static-content">
-                <h1 class="static-title">Bhavani Akurathi</h1>
-                <p class="static-subtitle">The Magic Touch</p>
-                <div class="static-bar-bg">
-                    <div class="static-bar-fill"></div>
-                </div>
-                <p style="color: rgba(128,0,32,0.7);">Loading beauty...</p>
+            <div class="static-bar-bg">
+                <div class="static-bar-fill"></div>
             </div>
         </div>
     </div>

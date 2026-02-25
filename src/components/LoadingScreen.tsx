@@ -1,46 +1,23 @@
-import { useState, useEffect } from 'react';
-import { motion } from "framer-motion";
+import { useEffect } from 'react';
+import { motion, AnimatePresence } from "framer-motion";
 
 interface LoadingScreenProps {
-  isLoading: boolean;
+  isReady: boolean;
   onComplete: () => void;
 }
 
-export function LoadingScreen({ isLoading, onComplete }: LoadingScreenProps) {
-  const [progress, setProgress] = useState(0);
-  const [isComplete, setIsComplete] = useState(false);
+export function LoadingScreen({ isReady, onComplete }: LoadingScreenProps) {
 
+  // As soon as the app signals it's ready, trigger completion smoothly
   useEffect(() => {
-    let interval: number;
-    
-    // Start progress animation immediately
-    interval = setInterval(() => {
-      setProgress(prev => {
-        const newProgress = prev + 2;
-        
-        // If we've reached 100% and fonts are loaded, complete the loading
-        if (newProgress >= 100 && isLoading) {
-          clearInterval(interval);
-          setTimeout(() => {
-            setIsComplete(true);
-            setTimeout(onComplete, 500); // Smooth transition delay
-          }, 300);
-          return 100;
-        }
-        
-        // If fonts not loaded yet, slow down at 90%
-        if (newProgress >= 90 && !isLoading) {
-          return 90 + (prev - 90) * 0.1; // Very slow increment
-        }
-        
-        return newProgress;
-      });
-    }, 50);
-
-    return () => clearInterval(interval);
-  }, [isLoading, onComplete]);
-
-  if (isComplete) return null;
+    if (isReady) {
+      // Give the bar a tiny moment to hit 100% visibly
+      const timer = setTimeout(() => {
+        onComplete();
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [isReady, onComplete]);
 
   return (
     <motion.div
@@ -57,47 +34,54 @@ export function LoadingScreen({ isLoading, onComplete }: LoadingScreenProps) {
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="mb-8"
         >
-          <h1 className="signature-name text-6xl md:text-8xl text-deep-maroon mb-2">
+          <h1 className="signature-name text-6xl md:text-8xl text-deep-maroon mb-2 drop-shadow-sm">
             Bhavani Akurathi
           </h1>
-          <p className="script-name text-2xl md:text-3xl text-deep-maroon/80">
+          <p className="script-name text-2xl md:text-3xl text-deep-maroon/80 drop-shadow-sm">
             The Magic Touch
           </p>
         </motion.div>
 
-        {/* Progress Bar */}
+        {/* CSS-Powered Progress Bar (Hardware Accelerated) */}
         <div className="w-64 mx-auto mb-6">
-          <div className="h-1 bg-deep-maroon/20 rounded-full overflow-hidden">
+          <div className="h-1 bg-deep-maroon/20 rounded-full overflow-hidden relative">
             <motion.div
-              initial={{ width: 0 }}
-              animate={{ width: `${progress}%` }}
-              transition={{ duration: 0.3, ease: "easeOut" }}
-              className="h-full bg-gradient-to-r from-rose-gold to-deep-maroon rounded-full"
+              initial={{ width: '0%' }}
+              // Without isReady, animate to 80% very slowly. If ready, snap to 100%.
+              animate={{ width: isReady ? '100%' : '80%' }}
+              transition={{ duration: isReady ? 0.3 : 10, ease: "easeOut" }}
+              className="absolute top-0 left-0 h-full bg-gradient-to-r from-rose-gold to-deep-maroon rounded-full"
             />
           </div>
         </div>
 
         {/* Loading Text */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5, duration: 0.5 }}
-          className="text-deep-maroon/70 text-lg"
-        >
-          {progress >= 90 ? 'Almost ready...' : 'Creating beauty...'}
-        </motion.p>
+        <AnimatePresence mode="wait">
+          {!isReady && (
+            <motion.p
+              key="loading-text"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="text-deep-maroon/70 text-lg"
+            >
+              Creating beauty...
+            </motion.p>
+          )}
+        </AnimatePresence>
 
         {/* Floating Elements Animation */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           {[...Array(8)].map((_, i) => (
             <motion.div
               key={i}
-              initial={{ 
+              initial={{
                 x: Math.random() * window.innerWidth,
                 y: window.innerHeight + 100,
                 opacity: 0
               }}
-              animate={{ 
+              animate={{
                 y: -100,
                 opacity: [0, 1, 0]
               }}

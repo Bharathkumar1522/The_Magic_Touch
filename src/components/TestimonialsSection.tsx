@@ -6,28 +6,28 @@ const testimonials = [
   {
     name: "Monisha",
     role: "Model",
-    image: "https://res.cloudinary.com/dyecmgvcy/image/upload/q_auto/v1757837118/Magictouch/IMG_0651_jvwvwd.webp",
+    image: "https://res.cloudinary.com/dyecmgvcy/image/upload/f_auto,q_auto/v1757837118/Magictouch/IMG_0651_jvwvwd.webp",
     text: "Bhavani made my wedding day absolutely perfect! The makeup lasted all day and I felt like the most beautiful version of myself. Every photo turned out stunning.",
     rating: 5
   },
   {
     name: "Janani ",
     role: "Bride",
-    image: "https://res.cloudinary.com/dyecmgvcy/image/upload/q_auto/v1757498591/Magictouch/IMG-20250910-WA0018_ab74ze.webp",
+    image: "https://res.cloudinary.com/dyecmgvcy/image/upload/f_auto,q_auto/v1757498591/Magictouch/IMG-20250910-WA0018_ab74ze.webp",
     text: "I was so nervous about my makeup, but Bhavani was incredibly professional and understood exactly what I wanted. The trial session was perfect and the wedding day exceeded all expectations!",
     rating: 5
   },
   {
     name: "Monica",
     role: "Bride",
-    image: "https://res.cloudinary.com/dyecmgvcy/image/upload/q_auto:eco/v1757495337/Magictouch/V_P09832_copy_mapk7j.webp",
+    image: "https://res.cloudinary.com/dyecmgvcy/image/upload/f_auto,q_auto:eco/v1757495337/Magictouch/V_P09832_copy_mapk7j.webp",
     text: "From the initial consultation to the wedding day, everything was flawless. The makeup enhanced my natural features beautifully and I received so many compliments from our guests.",
     rating: 5
   },
   {
     name: "Sindhu ",
     role: "Bride",
-    image: "https://res.cloudinary.com/dyecmgvcy/image/upload/q_auto/v1757498589/Magictouch/IMG-20250910-WA0025_xmczob.webp",
+    image: "https://res.cloudinary.com/dyecmgvcy/image/upload/f_auto,q_auto/v1757498589/Magictouch/IMG-20250910-WA0025_xmczob.webp",
     text: "The attention to detail and artistry is exceptional. I felt pampered and beautiful, and the makeup photographs amazingly. Highly recommend for any special occasion!",
     rating: 5
   }
@@ -52,7 +52,7 @@ export function TestimonialsSection() {
   };
 
   return (
-    <section id="testimonials" className="py-16 md:py-24 px-4 md:px-6 bg-gradient-to-b from-soft-blush to-champagne">
+    <section id="testimonials" className="py-16 md:py-24 px-4 md:px-6 bg-gradient-to-b from-soft-blush to-champagne content-visibility-auto">
       <div className="max-w-5xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl mb-6 text-deep-maroon">
@@ -73,6 +73,7 @@ export function TestimonialsSection() {
                     src={testimonials[currentTestimonial].image}
                     alt={testimonials[currentTestimonial].name}
                     className="w-full h-full object-cover"
+                    loading="lazy"
                   />
                 </div>
               </div>

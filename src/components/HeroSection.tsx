@@ -6,19 +6,22 @@ import { Button } from './ui/button';
 
 const carouselImages = [
   {
-    url: "https://res.cloudinary.com/dyecmgvcy/image/upload/q_auto/v1757494544/Magictouch/V_P09800_copy_1_z5lsg5.webp",
+    url: "https://res.cloudinary.com/dyecmgvcy/image/upload/f_auto,q_auto,w_1920/v1757494544/Magictouch/V_P09800_copy_1_z5lsg5.webp",
     title: "Timeless Elegance",
-    subtitle: "South Indian Bridal Makeup Specialist"
+    subtitle: "South Indian Bridal Makeup Specialist",
+    objectPosition: "object-[center_20%] sm:object-center"
   },
   {
-    url: "https://res.cloudinary.com/dyecmgvcy/image/upload/q_auto/v1767937417/Magictouch/DSC04742_aap51g.webp",
+    url: "https://res.cloudinary.com/dyecmgvcy/image/upload/f_auto,q_auto,w_1920/v1767937417/Magictouch/DSC04742_aap51g.webp",
     title: "Bridal Transformations",
-    subtitle: "Glossy, HD & Airbrush Finish for your Big Day"
+    subtitle: "Glossy, HD & Airbrush Finish for your Big Day",
+    objectPosition: "object-top sm:object-center"
   },
   {
-    url: "https://res.cloudinary.com/dyecmgvcy/image/upload/q_auto/v1757494807/Magictouch/WhatsApp_Image_2025-09-08_at_08.41.20_b59b49d6_fq6qdm.webp",
+    url: "https://res.cloudinary.com/dyecmgvcy/image/upload/f_auto,q_auto,w_1920/v1757494807/Magictouch/WhatsApp_Image_2025-09-08_at_08.41.20_b59b49d6_fq6qdm.webp",
     title: "Wedding Day Magic",
-    subtitle: "Destination Weddings & On-Location Services"
+    subtitle: "Destination Weddings & On-Location Services",
+    objectPosition: "object-[center_25%] sm:object-center"
   }
 ];
 
@@ -58,7 +61,7 @@ export function HeroSection() {
   const currentImage = useMemo(() => carouselImages[currentSlide], [currentSlide]);
 
   return (
-    <section className="relative h-screen overflow-hidden bg-gradient-to-br from-deep-maroon via-dusty-rose to-blush-pink">
+    <section className="relative h-[100dvh] w-full overflow-hidden bg-gradient-to-br from-deep-maroon via-dusty-rose to-blush-pink">
       {/* Carousel Images */}
       <div className="relative w-full h-full">
         <AnimatePresence mode="wait">
@@ -67,13 +70,13 @@ export function HeroSection() {
             initial={{ opacity: 0, scale: 1.05 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 1, ease: "easeInOut" }}
-            className="absolute inset-0"
+            transition={{ type: "spring", stiffness: 40, damping: 20 }}
+            className="absolute inset-0 optimize-gpu"
           >
             <ImageWithFallback
               src={currentImage.url}
               alt={currentImage.title}
-              className="w-full h-full object-cover"
+              className={`w-full h-full object-cover ${currentImage.objectPosition}`}
               loading="eager"
               fetchPriority="high"
             />
@@ -85,16 +88,16 @@ export function HeroSection() {
       {/* Hero Content */}
       <div className="absolute inset-0 flex items-center justify-center">
         <motion.div
-          className="text-center text-white px-4 sm:px-6 max-w-5xl"
+          className="text-center text-white px-4 sm:px-6 max-w-5xl optimize-gpu"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.3 }}
+          transition={{ type: "spring", stiffness: 50, damping: 20, delay: 0.2 }}
         >
           <motion.div
             className="mb-6 drop-shadow-lg"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
+            transition={{ type: "spring", stiffness: 60, damping: 20, delay: 0.4 }}
           >
             <h1 className="signature-name text-4xl sm:text-6xl md:text-7xl lg:text-8xl text-white mb-2 leading-tight drop-shadow-md">
               Bhavani Akurathi
@@ -109,7 +112,7 @@ export function HeroSection() {
             key={currentSlide}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            transition={{ type: "spring", stiffness: 70, damping: 20 }}
           >
             {currentImage.subtitle}
           </motion.p>
@@ -117,7 +120,7 @@ export function HeroSection() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.8 }}
+            transition={{ type: "spring", stiffness: 80, damping: 20, delay: 0.6 }}
           >
             <Button
               size="lg"

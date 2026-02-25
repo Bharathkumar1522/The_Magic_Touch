@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback, useMemo, memo } from 'react';
 import { motion } from "framer-motion";
 import { AnimatePresence } from "framer-motion";
 import { X, Filter, Heart, Calendar, MapPin, Clock } from 'lucide-react';
@@ -20,7 +20,7 @@ interface GalleryItem {
 const galleryData: GalleryItem[] = [
   {
     id: '1',
-    image: 'https://res.cloudinary.com/dyecmgvcy/image/upload/q_auto/v1757495329/Magictouch/IMG-20250909-WA0003_bumonf.webp',
+    image: 'https://res.cloudinary.com/dyecmgvcy/image/upload/f_auto,q_auto/v1757495329/Magictouch/IMG-20250909-WA0003_bumonf.webp',
     client: 'Ramya',
     style: 'Natural Glam',
     category: 'reception',
@@ -31,7 +31,7 @@ const galleryData: GalleryItem[] = [
   },
   {
     id: '2',
-    image: 'https://res.cloudinary.com/dyecmgvcy/image/upload/q_auto/v1757498591/Magictouch/IMG-20250910-WA0018_ab74ze.webp',
+    image: 'https://res.cloudinary.com/dyecmgvcy/image/upload/f_auto,q_auto/v1757498591/Magictouch/IMG-20250910-WA0018_ab74ze.webp',
     client: 'Janani',
     style: 'Traditional',
     category: 'bridal',
@@ -42,7 +42,7 @@ const galleryData: GalleryItem[] = [
   },
   {
     id: '3',
-    image: 'https://res.cloudinary.com/dyecmgvcy/image/upload/q_auto/v1757498589/Magictouch/IMG-20250910-WA0025_xmczob.webp',
+    image: 'https://res.cloudinary.com/dyecmgvcy/image/upload/f_auto,q_auto/v1757498589/Magictouch/IMG-20250910-WA0025_xmczob.webp',
     client: 'Sindhu',
     style: 'Contemporary',
     category: 'engagement',
@@ -53,7 +53,7 @@ const galleryData: GalleryItem[] = [
   },
   {
     id: '4',
-    image: 'https://res.cloudinary.com/dyecmgvcy/image/upload/q_auto/v1757498585/Magictouch/IMG-20250910-WA0029_rxsb5b.webp',
+    image: 'https://res.cloudinary.com/dyecmgvcy/image/upload/f_auto,q_auto/v1757498585/Magictouch/IMG-20250910-WA0029_rxsb5b.webp',
     client: 'Gayathri',
     style: 'Minimalistic',
     category: 'bridal',
@@ -64,7 +64,7 @@ const galleryData: GalleryItem[] = [
   },
   {
     id: '5',
-    image: 'https://res.cloudinary.com/dyecmgvcy/image/upload/q_auto:low/v1757837118/Magictouch/IMG_0651_jvwvwd.webp',
+    image: 'https://res.cloudinary.com/dyecmgvcy/image/upload/f_auto,q_auto:low/v1757837118/Magictouch/IMG_0651_jvwvwd.webp',
     client: 'Monisha',
     style: 'Bold',
     category: 'editorial',
@@ -75,7 +75,7 @@ const galleryData: GalleryItem[] = [
   },
   {
     id: '6',
-    image: 'https://res.cloudinary.com/dyecmgvcy/image/upload/q_auto/a_270/v1767937418/Magictouch/DSC04747_m7ae4f.webp',
+    image: 'https://res.cloudinary.com/dyecmgvcy/image/upload/f_auto,q_auto/a_270/v1767937418/Magictouch/DSC04747_m7ae4f.webp',
     client: 'Janani',
     style: 'Vintage',
     category: 'engagement',
@@ -86,7 +86,7 @@ const galleryData: GalleryItem[] = [
   },
   {
     id: '7',
-    image: 'https://res.cloudinary.com/dyecmgvcy/image/upload/q_auto:low/v1757495337/Magictouch/V_P09832_copy_mapk7j.webp',
+    image: 'https://res.cloudinary.com/dyecmgvcy/image/upload/f_auto,q_auto:low/v1757495337/Magictouch/V_P09832_copy_mapk7j.webp',
     client: 'Monica',
     style: 'Artistic',
     category: 'engagement',
@@ -97,7 +97,7 @@ const galleryData: GalleryItem[] = [
   },
   {
     id: '8',
-    image: 'https://res.cloudinary.com/dyecmgvcy/image/upload/q_auto/v1757495329/Magictouch/IMG-20250909-WA0011_pnijju.webp',
+    image: 'https://res.cloudinary.com/dyecmgvcy/image/upload/f_auto,q_auto/v1757495329/Magictouch/IMG-20250909-WA0011_pnijju.webp',
     client: 'Sumathi',
     style: 'Glamorous',
     category: 'prewedding',
@@ -117,22 +117,24 @@ const categories = [
   { id: 'reception', label: 'Reception' }
 ];
 
-export function PhotoGallery() {
+export const PhotoGallery = memo(function PhotoGallery() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedImage, setSelectedImage] = useState<GalleryItem | null>(null);
 
   // Preload image helper
-  const preloadImage = (url: string) => {
+  const preloadImage = useCallback((url: string) => {
     const img = new Image();
     img.src = url.replace('/upload/', '/upload/w_1200/');
-  };
+  }, []);
 
-  const filteredItems = selectedCategory === 'all'
-    ? galleryData
-    : galleryData.filter(item => item.category === selectedCategory);
+  const filteredItems = useMemo(() => {
+    return selectedCategory === 'all'
+      ? galleryData
+      : galleryData.filter(item => item.category === selectedCategory);
+  }, [selectedCategory]);
 
   return (
-    <section className="py-16 md:py-24 bg-gradient-to-b from-soft-blush to-cream">
+    <section className="py-16 md:py-24 bg-gradient-to-b from-soft-blush to-cream content-visibility-auto">
       <div className="container mx-auto px-4">
         {/* Header */}
         <motion.div
@@ -228,6 +230,8 @@ export function PhotoGallery() {
                   src={item.image.replace('/upload/', '/upload/w_800/')}
                   alt={`${item.client} - ${item.style}`}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  loading="lazy"
+                  decoding="async"
                 />
 
                 {/* Overlay */}
@@ -348,4 +352,4 @@ export function PhotoGallery() {
       </div>
     </section>
   );
-}
+});

@@ -1,6 +1,7 @@
 import { Instagram, MessageCircle, Share, Heart } from 'lucide-react';
+import { memo } from 'react';
 
-export function Footer() {
+export const Footer = memo(function Footer() {
   return (
     <footer className="bg-deep-maroon text-ivory py-12 md:py-16 px-6">
       <div className="max-w-7xl mx-auto">
@@ -121,4 +122,4 @@ export function Footer() {
       </div>
     </footer>
   );
-}
+});

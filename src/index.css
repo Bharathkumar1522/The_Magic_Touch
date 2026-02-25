@@ -139,8 +139,39 @@
     @apply border-border outline-ring/50;
   }
 
+  html {
+    /* Prevent horizontal scrolling which causes the right-side gap on mobile */
+    overflow-x: hidden;
+    /* Set an explicit dark background so the notch/safe-area on mobile isn't white */
+    background-color: var(--deep-maroon);
+    /* Style native scrollbar to be minute and elegant */
+    scrollbar-width: thin;
+    scrollbar-color: var(--rose-gold) transparent;
+  }
+
   body {
     @apply bg-background text-foreground;
+    width: 100%;
+  }
+
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--rose-gold);
+    border-radius: 4px;
+  }
+
+  /* Keep the main background color for the actual content wrapper */
+  .app-wrapper {
+    @apply bg-background;
+    min-height: 100vh;
   }
 }
 
@@ -218,23 +249,34 @@ html {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Improved scrollbar styling */
-::-webkit-scrollbar {
-  width: 8px;
+/* Lenis Smooth Scroll Recommended Boilerplate */
+html.lenis,
+html.lenis body {
+  height: auto;
 }
 
-::-webkit-scrollbar-track {
-  background: var(--soft-blush);
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
 }
 
-::-webkit-scrollbar-thumb {
-  background: var(--rose-gold);
-  border-radius: 4px;
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: var(--deep-maroon);
+.lenis.lenis-stopped {
+  overflow: hidden;
 }
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+/* Hide overlapping fake scrollbars injected by libraries */
+.lenis-scrollbar,
+[data-scrollbar] {
+  display: none !important;
+}
+
 
 /* Smooth animations */
 @supports (prefers-reduced-motion: no-preference) {
@@ -303,6 +345,20 @@ img {
 /* Smooth transitions */
 .smooth-transition {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* GPU Optimization */
+.optimize-gpu {
+  transform: translateZ(0);
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+
+/* Defer rendering of off-screen components */
+.content-visibility-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: 1000px;
+  /* Approximate height to prevent scrollbar jumps */
 }
 
 /* Signature Name Styles */
