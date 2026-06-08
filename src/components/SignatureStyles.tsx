@@ -1,5 +1,10 @@
 import { ImageWithFallback } from './figma/ImageWithFallback';
-import { memo } from 'react';
+import { memo, useRef } from 'react';
+import { gsap } from 'gsap';
+import { useGSAP } from '@gsap/react';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const styles = [
   {
@@ -30,26 +35,58 @@ const styles = [
 ];
 
 export const SignatureStyles = memo(function SignatureStyles() {
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useGSAP(() => {
+    // Header Animation
+    gsap.from(".style-header-anim", {
+      scrollTrigger: {
+        trigger: sectionRef.current,
+        start: "top 80%",
+        toggleActions: "play none none none"
+      },
+      opacity: 0,
+      y: 30,
+      duration: 1,
+      stagger: 0.15,
+      ease: "power3.out"
+    });
+
+    // Cards Animation
+    gsap.from(".style-card-anim", {
+      scrollTrigger: {
+        trigger: ".styles-grid",
+        start: "top 85%",
+        toggleActions: "play none none none"
+      },
+      opacity: 0,
+      y: 50,
+      duration: 0.8,
+      stagger: 0.15,
+      ease: "back.out(1.5)"
+    });
+  }, { scope: sectionRef });
+
   return (
-    <section id="styles" className="py-16 md:py-24 px-4 md:px-6 bg-gradient-to-b from-ivory to-soft-blush">
+    <section ref={sectionRef} id="styles" className="py-16 md:py-24 px-4 md:px-6 bg-gradient-to-b from-ivory to-soft-blush overflow-hidden">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl mb-4 text-deep-maroon">
+        <div className="text-center mb-16 optimize-gpu">
+          <h2 className="style-header-anim text-4xl md:text-5xl mb-4 text-deep-maroon">
             Signature Styles
           </h2>
-          <p className="script-name text-2xl md:text-3xl text-deep-maroon mb-4">
+          <p className="style-header-anim script-name text-2xl md:text-3xl text-deep-maroon mb-4">
             by Bhavani Akurathi
           </p>
-          <p className="text-lg text-deep-maroon/80 max-w-2xl mx-auto">
+          <p className="style-header-anim text-lg text-deep-maroon/80 max-w-2xl mx-auto">
             Discover our carefully curated collection of bridal makeup styles, each designed to bring out your unique beauty on your special day.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="styles-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {styles.map((style, index) => (
             <div
               key={index}
-              className="bg-white/60 backdrop-blur-sm rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-500 hover:-translate-y-2 group"
+              className="style-card-anim bg-white/60 backdrop-blur-sm rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-500 group optimize-gpu"
             >
               <div className="aspect-[4/5] overflow-hidden">
                 <ImageWithFallback

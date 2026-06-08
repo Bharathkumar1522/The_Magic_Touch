@@ -1,9 +1,12 @@
-import { useState, useCallback, useMemo, memo } from 'react';
-import { motion } from "framer-motion";
-import { AnimatePresence } from "framer-motion";
+import { useState, useCallback, useMemo, memo, useRef } from 'react';
 import { X, Filter, Heart, Calendar, MapPin, Clock } from 'lucide-react';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
+import { gsap } from 'gsap';
+import { useGSAP } from '@gsap/react';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 interface GalleryItem {
   id: string;
@@ -120,8 +123,9 @@ const categories = [
 export const PhotoGallery = memo(function PhotoGallery() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedImage, setSelectedImage] = useState<GalleryItem | null>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
 
-  // Preload image helper
   const preloadImage = useCallback((url: string) => {
     const img = new Image();
     img.src = url.replace('/upload/', '/upload/w_1200/');
@@ -133,17 +137,69 @@ export const PhotoGallery = memo(function PhotoGallery() {
       : galleryData.filter(item => item.category === selectedCategory);
   }, [selectedCategory]);
 
+  useGSAP(() => {
+    // Header reveal
+    gsap.from(".gallery-header", {
+      scrollTrigger: {
+        trigger: sectionRef.current,
+        start: "top 80%",
+        toggleActions: "play none none none"
+      },
+      opacity: 0,
+      y: 30,
+      duration: 1,
+      ease: "power3.out"
+    });
+
+    // Filters reveal
+    gsap.from(".gallery-filters", {
+      scrollTrigger: {
+        trigger: sectionRef.current,
+        start: "top 75%",
+        toggleActions: "play none none none"
+      },
+      opacity: 0,
+      y: 20,
+      duration: 0.8,
+      delay: 0.2,
+      ease: "power2.out"
+    });
+  }, { scope: sectionRef });
+
+  // Animate items when filter changes
+  useGSAP(() => {
+    gsap.fromTo(".gallery-item", 
+      { opacity: 0, scale: 0.95, y: 20 },
+      { 
+        opacity: 1, 
+        scale: 1, 
+        y: 0, 
+        duration: 0.5, 
+        stagger: 0.05, 
+        ease: "power2.out"
+      }
+    );
+  }, { dependencies: [filteredItems], scope: sectionRef });
+
+  // Modal Animation
+  useGSAP(() => {
+    if (selectedImage && modalRef.current) {
+      gsap.fromTo(modalRef.current,
+        { opacity: 0, scale: 0.9, y: 20 },
+        { opacity: 1, scale: 1, y: 0, duration: 0.4, ease: "power3.out" }
+      );
+      gsap.fromTo(".modal-backdrop",
+        { opacity: 0 },
+        { opacity: 1, duration: 0.3 }
+      );
+    }
+  }, { dependencies: [selectedImage] });
+
   return (
-    <section className="py-16 md:py-24 bg-gradient-to-b from-soft-blush to-cream content-visibility-auto">
+    <section ref={sectionRef} id="gallery" className="py-16 md:py-24 bg-gradient-to-b from-soft-blush to-cream">
       <div className="container mx-auto px-4">
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-8 md:mb-16"
-        >
+        <div className="gallery-header text-center mb-8 md:mb-16 optimize-gpu">
           <h2 className="text-3xl md:text-4xl lg:text-5xl mb-4 md:mb-6 text-deep-maroon">
             Gallery
           </h2>
@@ -151,22 +207,15 @@ export const PhotoGallery = memo(function PhotoGallery() {
             Discover our portfolio of beautiful transformations. Each look is carefully crafted
             to enhance natural beauty and create unforgettable moments.
           </p>
-        </motion.div>
+        </div>
 
         {/* Filter Buttons */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="mb-8 md:mb-12"
-        >
+        <div className="gallery-filters mb-8 md:mb-12 optimize-gpu">
           <div className="flex items-center justify-center mb-4 md:hidden">
             <Filter className="w-4 h-4 text-deep-maroon mr-2" />
             <span className="text-sm text-deep-maroon">Filter by category</span>
           </div>
 
-          {/* Mobile: Horizontal scroll */}
           <div className="md:hidden overflow-x-auto pb-2">
             <div className="flex gap-3 px-4 min-w-max">
               <Filter className="w-5 h-5 text-deep-maroon mr-2 hidden md:block" />
@@ -187,7 +236,6 @@ export const PhotoGallery = memo(function PhotoGallery() {
             </div>
           </div>
 
-          {/* Desktop: Centered layout */}
           <div className="hidden md:flex flex-wrap justify-center gap-4">
             <Filter className="w-5 h-5 text-deep-maroon mr-2" />
             {categories.map((category) => (
@@ -204,24 +252,14 @@ export const PhotoGallery = memo(function PhotoGallery() {
               </Button>
             ))}
           </div>
-        </motion.div>
+        </div>
 
         {/* Gallery Grid */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6"
-        >
-          {filteredItems.map((item, index) => (
-            <motion.div
+        <div className="gallery-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+          {filteredItems.map((item) => (
+            <div
               key={item.id}
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-              className="relative group cursor-pointer overflow-hidden rounded-lg lg:rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+              className="gallery-item relative group cursor-pointer overflow-hidden rounded-lg lg:rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 optimize-gpu"
               onClick={() => setSelectedImage(item)}
               onMouseEnter={() => preloadImage(item.image)}
             >
@@ -234,7 +272,6 @@ export const PhotoGallery = memo(function PhotoGallery() {
                   decoding="async"
                 />
 
-                {/* Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-deep-maroon/70 via-transparent to-transparent opacity-60 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300">
                   <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 text-white">
                     <h4 className="mb-1 sm:mb-2 text-sm sm:text-base">{item.client}</h4>
@@ -244,111 +281,93 @@ export const PhotoGallery = memo(function PhotoGallery() {
                   </div>
                 </div>
 
-                {/* Category Badge */}
-                <Badge
-                  className="absolute top-3 left-3 bg-white/90 text-deep-maroon border-0 text-xs"
-                >
+                <Badge className="absolute top-3 left-3 bg-white/90 text-deep-maroon border-0 text-xs">
                   {item.category}
                 </Badge>
               </div>
-            </motion.div>
+            </div>
           ))}
-        </motion.div>
+        </div>
 
         {/* Modal */}
-        <AnimatePresence>
-          {selectedImage && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 z-50 flex items-center justify-center p-2 md:p-4 bg-black/90"
-              onClick={() => setSelectedImage(null)}
+        {selectedImage && (
+          <div
+            className="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-2 md:p-4 bg-black/90 optimize-gpu"
+            onClick={() => {
+              gsap.to(".modal-backdrop", { opacity: 0, duration: 0.3 });
+              gsap.to(modalRef.current, { scale: 0.9, y: 20, opacity: 0, duration: 0.3, onComplete: () => setSelectedImage(null) });
+            }}
+          >
+            <div
+              ref={modalRef}
+              className="relative bg-white rounded-xl md:rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] md:max-h-[85vh] flex flex-col overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
             >
-              <motion.div
-                initial={{ scale: 0.8, opacity: 0, y: 50 }}
-                animate={{ scale: 1, opacity: 1, y: 0 }}
-                exit={{ scale: 0.8, opacity: 0, y: 50 }}
-                transition={{ type: "spring", duration: 0.5 }}
-                className="relative bg-white rounded-xl md:rounded-2xl shadow-2xl max-w-4xl w-full max-h-[95vh] md:max-h-[90vh] overflow-hidden"
-                onClick={(e) => e.stopPropagation()}
+              <Button
+                variant="outline"
+                size="icon"
+                className="absolute top-3 right-3 md:top-4 md:right-4 z-10 bg-white/90 hover:bg-white border-0 shadow-lg w-8 h-8 md:w-10 md:h-10 rounded-full"
+                onClick={() => {
+                  gsap.to(".modal-backdrop", { opacity: 0, duration: 0.3 });
+                  gsap.to(modalRef.current, { scale: 0.9, y: 20, opacity: 0, duration: 0.3, onComplete: () => setSelectedImage(null) });
+                }}
               >
-                {/* Close Button */}
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="absolute top-3 right-3 md:top-4 md:right-4 z-10 bg-white/90 hover:bg-white border-0 shadow-lg w-8 h-8 md:w-10 md:h-10"
-                  onClick={() => setSelectedImage(null)}
-                >
-                  <X className="w-4 h-4" />
-                </Button>
+                <X className="w-5 h-5 text-deep-maroon" />
+              </Button>
 
-                <div className="flex flex-col md:grid md:grid-cols-2 gap-0 overflow-y-auto max-h-[95vh] md:max-h-[90vh]">
-                  {/* Image */}
-                  <div className="relative md:min-h-[400px] bg-soft-blush/20 aspect-[4/5] md:aspect-auto h-full">
-                    <img
-                      src={selectedImage.image.replace('/upload/', '/upload/w_1200/')}
-                      alt={`${selectedImage.client} - ${selectedImage.style}`}
-                      className="w-full h-full object-cover absolute inset-0 md:relative"
-                      loading="eager"
-                    />
-                  </div>
+              <div className="flex-1 flex flex-col md:grid md:grid-cols-2 gap-0 overflow-y-auto min-h-0">
+                <div className="relative min-h-[50vh] md:min-h-0 bg-soft-blush/20 md:h-[85vh]">
+                  <img
+                    src={selectedImage.image.replace('/upload/', '/upload/w_1200/')}
+                    alt={`${selectedImage.client} - ${selectedImage.style}`}
+                    className="w-full h-full object-cover absolute inset-0"
+                    loading="eager"
+                  />
+                </div>
 
-                  {/* Details */}
-                  <div className="p-4 md:p-8 flex flex-col justify-between">
-                    <div>
-                      <div className="flex items-center gap-2 mb-3 md:mb-4">
-                        <Badge variant="outline" className="border-deep-maroon text-deep-maroon text-xs">
-                          {selectedImage.category}
-                        </Badge>
-                        <Heart className="w-4 h-4 text-rose-gold" />
+                <div className="p-4 md:p-8 flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center gap-2 mb-3 md:mb-4">
+                      <Badge variant="outline" className="border-deep-maroon text-deep-maroon text-xs">
+                        {selectedImage.category}
+                      </Badge>
+                      <Heart className="w-4 h-4 text-rose-gold" />
+                    </div>
+                    <h3 className="text-deep-maroon mb-1 md:mb-2 text-lg md:text-xl">
+                      {selectedImage.client}
+                    </h3>
+                    <h4 className="text-dusty-rose mb-4 md:mb-6 text-sm md:text-base">
+                      {selectedImage.style} Style
+                    </h4>
+                    <p className="text-muted-foreground mb-6 md:mb-8 leading-relaxed text-sm md:text-base">
+                      {selectedImage.description}
+                    </p>
+                    <div className="space-y-3 md:space-y-4 mb-6 md:mb-8">
+                      <div className="flex items-center gap-3 text-xs md:text-sm text-muted-foreground">
+                        <MapPin className="w-4 h-4 text-deep-maroon flex-shrink-0" />
+                        <span>{selectedImage.location}</span>
                       </div>
-
-                      <h3 className="text-deep-maroon mb-1 md:mb-2 text-lg md:text-xl">
-                        {selectedImage.client}
-                      </h3>
-
-                      <h4 className="text-dusty-rose mb-4 md:mb-6 text-sm md:text-base">
-                        {selectedImage.style} Style
-                      </h4>
-
-                      <p className="text-muted-foreground mb-6 md:mb-8 leading-relaxed text-sm md:text-base">
-                        {selectedImage.description}
-                      </p>
-
-                      <div className="space-y-3 md:space-y-4 mb-6 md:mb-8">
-                        <div className="flex items-center gap-3 text-xs md:text-sm text-muted-foreground">
-                          <MapPin className="w-4 h-4 text-deep-maroon flex-shrink-0" />
-                          <span>{selectedImage.location}</span>
-                        </div>
-                        <div className="flex items-center gap-3 text-xs md:text-sm text-muted-foreground">
-                          <Clock className="w-4 h-4 text-deep-maroon flex-shrink-0" />
-                          <span>{selectedImage.duration}</span>
-                        </div>
+                      <div className="flex items-center gap-3 text-xs md:text-sm text-muted-foreground">
+                        <Clock className="w-4 h-4 text-deep-maroon flex-shrink-0" />
+                        <span>{selectedImage.duration}</span>
                       </div>
                     </div>
-
-                    {/* Tags */}
-                    <div>
-                      <h5 className="text-xs md:text-sm mb-2 md:mb-3 text-deep-maroon">Tags</h5>
-                      <div className="flex flex-wrap gap-1.5 md:gap-2">
-                        {selectedImage.tags.map((tag) => (
-                          <Badge
-                            key={tag}
-                            variant="secondary"
-                            className="bg-soft-blush text-deep-maroon border-0 text-xs"
-                          >
-                            {tag}
-                          </Badge>
-                        ))}
-                      </div>
+                  </div>
+                  <div>
+                    <h5 className="text-xs md:text-sm mb-2 md:mb-3 text-deep-maroon">Tags</h5>
+                    <div className="flex flex-wrap gap-1.5 md:gap-2">
+                      {selectedImage.tags.map((tag) => (
+                        <Badge key={tag} variant="secondary" className="bg-soft-blush text-deep-maroon border-0 text-xs">
+                          {tag}
+                        </Badge>
+                      ))}
                     </div>
                   </div>
                 </div>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );

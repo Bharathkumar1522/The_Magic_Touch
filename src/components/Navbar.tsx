@@ -1,10 +1,15 @@
-import { useState, useEffect, useCallback, useMemo, memo } from "react";
+import { useState, useEffect, useCallback, useMemo, memo, useRef } from "react";
 import { Menu, X } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { gsap } from "gsap";
+import { useGSAP } from "@gsap/react";
+
+gsap.registerPlugin(useGSAP);
 
 export const Navbar = memo(function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const navContainerRef = useRef<HTMLElement>(null);
 
   const navLinks = useMemo(() => [
     { href: "#home", label: "Home" },
@@ -31,7 +36,6 @@ export const Navbar = memo(function Navbar() {
 
   useEffect(() => {
     let ticking = false;
-
     const handleScrollThrottle = () => {
       if (!ticking) {
         requestAnimationFrame(() => {
@@ -46,7 +50,6 @@ export const Navbar = memo(function Navbar() {
     return () => window.removeEventListener("scroll", handleScrollThrottle);
   }, [handleScroll]);
 
-  // Close mobile menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Element;
@@ -59,9 +62,38 @@ export const Navbar = memo(function Navbar() {
     return () => document.removeEventListener('click', handleClickOutside);
   }, [isMenuOpen]);
 
+  // GSAP Menu Animations
+  useGSAP(() => {
+    if (!menuRef.current) return;
+    
+    if (isMenuOpen) {
+      gsap.to(menuRef.current, {
+        height: "auto",
+        duration: 0.4,
+        ease: "power3.out",
+        display: "block"
+      });
+      
+      gsap.fromTo(".mobile-nav-link", 
+        { opacity: 0, x: -20 },
+        { opacity: 1, x: 0, duration: 0.3, stagger: 0.05, ease: "power2.out", delay: 0.1 }
+      );
+    } else {
+      gsap.to(menuRef.current, {
+        height: 0,
+        duration: 0.3,
+        ease: "power2.in",
+        onComplete: () => {
+          if (menuRef.current) menuRef.current.style.display = "none";
+        }
+      });
+    }
+  }, { dependencies: [isMenuOpen], scope: navContainerRef });
+
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${isScrolled
+      ref={navContainerRef}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 optimize-gpu ${isScrolled
           ? "bg-white/80 backdrop-blur-sm shadow-lg"
           : "bg-transparent backdrop-blur-xs"
         }`}
@@ -70,10 +102,7 @@ export const Navbar = memo(function Navbar() {
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
           <div className="flex items-center">
-            <a
-              href="#home"
-              className="flex items-center"
-            >
+            <a href="#home" className="flex items-center">
               <div className="flex flex-col">
                 <span
                   className={`script-name text-lg md:text-xl transition-all duration-500 ${isScrolled
@@ -89,7 +118,7 @@ export const Navbar = memo(function Navbar() {
                       : "text-white/80 drop-shadow-md"
                     }`}
                 >
-                  The Magic Touch
+                  Bhavs Beauty Studio
                 </span>
               </div>
             </a>
@@ -115,7 +144,7 @@ export const Navbar = memo(function Navbar() {
             ))}
             <a
               href="#contact"
-              className={`px-6 py-2 rounded-full transition-all duration-300 font-medium ${isScrolled
+              className={`px-6 py-2 rounded-full transition-all duration-300 font-medium hover:scale-105 active:scale-95 ${isScrolled
                   ? "bg-deep-maroon text-ivory hover:bg-deep-maroon/90"
                   : "bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 border border-white/30 hover:border-white/50 drop-shadow-lg"
                 }`}
@@ -125,98 +154,53 @@ export const Navbar = memo(function Navbar() {
           </div>
 
           {/* Mobile Menu Button */}
-          <motion.button
+          <button
             onClick={toggleMenu}
-            className={`md:hidden p-2 transition-all duration-300 rounded-lg ${isScrolled
+            className={`md:hidden p-2 transition-all duration-300 rounded-lg hover:scale-105 active:scale-95 ${isScrolled
                 ? "text-deep-maroon hover:text-rose-gold bg-transparent"
                 : "text-white/90 hover:text-white bg-white/10 backdrop-blur-sm"
               }`}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
             aria-label={isMenuOpen ? "Close menu" : "Open menu"}
           >
-            <AnimatePresence mode="wait">
-              {isMenuOpen ? (
-                <motion.div
-                  key="close"
-                  initial={{ rotate: -90, opacity: 0 }}
-                  animate={{ rotate: 0, opacity: 1 }}
-                  exit={{ rotate: 90, opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <X className="w-6 h-6" />
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="menu"
-                  initial={{ rotate: 90, opacity: 0 }}
-                  animate={{ rotate: 0, opacity: 1 }}
-                  exit={{ rotate: -90, opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <Menu className="w-6 h-6" />
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </motion.button>
+            {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
         </div>
 
         {/* Mobile Navigation */}
-        <AnimatePresence>
-          {isMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
-              className={`md:hidden backdrop-blur-md rounded-b-lg mx-2 mb-2 overflow-hidden ${isScrolled
-                  ? "bg-ivory/95 border-t border-rose-gold/20"
-                  : "bg-white/10 border-t border-white/20"
-                }`}
-            >
-              <motion.div
-                className="px-2 pt-2 pb-3 space-y-1"
-                initial={{ y: -10 }}
-                animate={{ y: 0 }}
-                transition={{ delay: 0.1 }}
+        <div
+          ref={menuRef}
+          style={{ height: 0, overflow: 'hidden', display: 'none' }}
+          className={`md:hidden backdrop-blur-md rounded-b-lg mx-2 mb-2 ${isScrolled
+              ? "bg-ivory/95 border-t border-rose-gold/20"
+              : "bg-white/10 border-t border-white/20"
+            }`}
+        >
+          <div className="px-2 pt-2 pb-3 space-y-1">
+            {navLinks.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                className={`mobile-nav-link block px-3 py-2 rounded-lg transition-all duration-300 font-medium ${isScrolled
+                    ? "text-deep-maroon hover:text-rose-gold hover:bg-rose-gold/10"
+                    : "text-white/90 hover:text-white hover:bg-white/10"
+                  }`}
+                onClick={closeMenu}
               >
-                {navLinks.map((link, index) => (
-                  <motion.a
-                    key={link.href}
-                    href={link.href}
-                    className={`block px-3 py-2 rounded-lg transition-all duration-300 font-medium ${isScrolled
-                        ? "text-deep-maroon hover:text-rose-gold hover:bg-rose-gold/10"
-                        : "text-white/90 hover:text-white hover:bg-white/10"
-                      }`}
-                    onClick={closeMenu}
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.05 }}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    {link.label}
-                  </motion.a>
-                ))}
-                <motion.a
-                  href="#contact"
-                  className={`block mx-3 mt-4 px-6 py-3 rounded-full text-center transition-all duration-300 font-medium ${isScrolled
-                      ? "bg-deep-maroon text-ivory hover:bg-deep-maroon/90"
-                      : "bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 border border-white/30"
-                    }`}
-                  onClick={closeMenu}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 }}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  Book Now
-                </motion.a>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+                {link.label}
+              </a>
+            ))}
+            <a
+              href="#contact"
+              className={`mobile-nav-link block mx-3 mt-4 px-6 py-3 rounded-full text-center transition-all duration-300 font-medium ${isScrolled
+                  ? "bg-deep-maroon text-ivory hover:bg-deep-maroon/90"
+                  : "bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 border border-white/30"
+                }`}
+              onClick={closeMenu}
+            >
+              Book Now
+            </a>
+          </div>
+        </div>
       </div>
     </nav>
   );

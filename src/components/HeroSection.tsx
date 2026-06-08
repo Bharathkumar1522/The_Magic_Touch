@@ -1,8 +1,11 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { motion, AnimatePresence } from "framer-motion";
+import { gsap } from 'gsap';
+import { useGSAP } from '@gsap/react';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 import { Button } from './ui/button';
+
+gsap.registerPlugin(useGSAP);
 
 const carouselImages = [
   {
@@ -28,6 +31,8 @@ const carouselImages = [
 export function HeroSection() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const prevSlideRef = useRef(currentSlide);
 
   const nextSlide = useCallback(() => {
     setCurrentSlide((prev) => (prev + 1) % carouselImages.length);
@@ -40,7 +45,6 @@ export function HeroSection() {
   const handleSlideClick = useCallback((index: number) => {
     setCurrentSlide(index);
     setIsAutoPlaying(false);
-    // Resume autoplay after 8 seconds
     setTimeout(() => setIsAutoPlaying(true), 8000);
   }, []);
 
@@ -53,75 +57,109 @@ export function HeroSection() {
 
   useEffect(() => {
     if (!isAutoPlaying) return;
-
     const interval = setInterval(nextSlide, 5000);
     return () => clearInterval(interval);
   }, [nextSlide, isAutoPlaying]);
 
-  const currentImage = useMemo(() => carouselImages[currentSlide], [currentSlide]);
+  // GSAP Animations
+  useGSAP(() => {
+    const tl = gsap.timeline();
+    
+    // Animate the initial background image scale for a premium feel
+    tl.fromTo(`.hero-bg-0 img`,
+      { scale: 1.15 },
+      { scale: 1, duration: 3, ease: "power2.out" }
+    );
+
+    // Initial Load Animation for text
+    tl.fromTo(".hero-main-text", 
+      { opacity: 0, y: 50, filter: "blur(4px)" }, 
+      { opacity: 1, y: 0, filter: "blur(0px)", duration: 1.2, ease: "power4.out" },
+      "-=2.5"
+    )
+    .fromTo(".hero-btn", 
+      { opacity: 0, y: 20 }, 
+      { opacity: 1, y: 0, duration: 0.8, ease: "back.out(1.7)" }, 
+      "-=1.8"
+    );
+  }, { scope: containerRef });
+
+  // Slide Change Animations
+  useGSAP(() => {
+    if (prevSlideRef.current === currentSlide) return;
+    
+    // Animate the background image fade and scale
+    gsap.fromTo(`.hero-bg-${currentSlide}`, 
+      { opacity: 0, zIndex: 10 },
+      { opacity: 1, duration: 1.5, ease: "power2.out", zIndex: 10 }
+    );
+    
+    gsap.fromTo(`.hero-bg-${currentSlide} img`,
+      { scale: 1.1 },
+      { scale: 1, duration: 4, ease: "power2.out" }
+    );
+    
+    // Hide previous slide after new one fades in
+    gsap.to(`.hero-bg-${prevSlideRef.current}`, { 
+      opacity: 0, 
+      duration: 1.5, 
+      delay: 0.5,
+      zIndex: 1,
+      onComplete: () => {
+        prevSlideRef.current = currentSlide;
+      }
+    });
+
+    // Animate subtitle text change
+    gsap.fromTo(".hero-subtitle",
+      { opacity: 0, y: 15, filter: "blur(2px)" },
+      { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.8, ease: "power3.out" }
+    );
+
+  }, { dependencies: [currentSlide], scope: containerRef });
 
   return (
-    <section className="relative h-[100dvh] w-full overflow-hidden bg-gradient-to-br from-deep-maroon via-dusty-rose to-blush-pink">
-      {/* Carousel Images */}
-      <div className="relative w-full h-full">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={currentSlide}
-            initial={{ opacity: 0, scale: 1.05 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ type: "spring", stiffness: 40, damping: 20 }}
-            className="absolute inset-0 optimize-gpu"
+    <section ref={containerRef} className="relative h-[100dvh] w-full overflow-hidden bg-gradient-to-br from-deep-maroon via-dusty-rose to-blush-pink">
+      {/* Carousel Images - Pre-rendered for smooth crossfading */}
+      <div className="absolute inset-0 w-full h-full bg-black">
+        {carouselImages.map((img, index) => (
+          <div 
+            key={index}
+            className={`hero-bg-${index} absolute inset-0 w-full h-full optimize-gpu`}
+            style={{ 
+              opacity: index === currentSlide ? 1 : 0, 
+              zIndex: index === currentSlide ? 10 : 1 
+            }}
           >
             <ImageWithFallback
-              src={currentImage.url}
-              alt={currentImage.title}
-              className={`w-full h-full object-cover ${currentImage.objectPosition}`}
-              loading="eager"
-              fetchPriority="high"
+              src={img.url}
+              alt={img.title}
+              className={`w-full h-full object-cover ${img.objectPosition}`}
+              loading={index === 0 ? "eager" : "lazy"}
+              fetchPriority={index === 0 ? "high" : "auto"}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/30" />
-          </motion.div>
-        </AnimatePresence>
+          </div>
+        ))}
       </div>
 
       {/* Hero Content */}
-      <div className="absolute inset-0 flex items-center justify-center">
-        <motion.div
-          className="text-center text-white px-4 sm:px-6 max-w-5xl optimize-gpu"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ type: "spring", stiffness: 50, damping: 20, delay: 0.2 }}
-        >
-          <motion.div
-            className="mb-6 drop-shadow-lg"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ type: "spring", stiffness: 60, damping: 20, delay: 0.4 }}
-          >
+      <div className="absolute inset-0 z-20 flex items-center justify-center">
+        <div className="text-center text-white px-4 sm:px-6 max-w-5xl optimize-gpu">
+          <div className="hero-main-text mb-6 drop-shadow-lg">
             <h1 className="signature-name text-4xl sm:text-6xl md:text-7xl lg:text-8xl text-white mb-2 leading-tight drop-shadow-md">
               Bhavani Akurathi
             </h1>
             <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-white/95 font-serif italic drop-shadow-md">
-              The Magic Touch
+              Bhavs Beauty Studio
             </p>
-          </motion.div>
+          </div>
 
-          <motion.p
-            className="text-base sm:text-lg md:text-xl lg:text-2xl mb-8 opacity-95 font-light max-w-3xl mx-auto leading-relaxed drop-shadow-md"
-            key={currentSlide}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ type: "spring", stiffness: 70, damping: 20 }}
-          >
-            {currentImage.subtitle}
-          </motion.p>
+          <p className="hero-subtitle text-base sm:text-lg md:text-xl lg:text-2xl mb-8 opacity-95 font-light max-w-3xl mx-auto leading-relaxed drop-shadow-md">
+            {carouselImages[currentSlide].subtitle}
+          </p>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ type: "spring", stiffness: 80, damping: 20, delay: 0.6 }}
-          >
+          <div className="hero-btn">
             <Button
               size="lg"
               onClick={handleBookConsultation}
@@ -129,48 +167,42 @@ export function HeroSection() {
             >
               Book Your Consultation
             </Button>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       </div>
 
-      {/* Navigation Arrows - Hidden on small screens */}
-      <motion.button
+      {/* Navigation Arrows */}
+      <button
         onClick={prevSlide}
-        className="hidden sm:block absolute left-4 md:left-6 top-1/2 -translate-y-1/2 bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white p-2 md:p-3 rounded-full transition-all duration-300 hover:scale-110"
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.95 }}
+        className="hidden sm:block absolute z-30 left-4 md:left-6 top-1/2 -translate-y-1/2 bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white p-2 md:p-3 rounded-full transition-all duration-300 hover:scale-110 active:scale-95"
         aria-label="Previous slide"
       >
         <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
-      </motion.button>
+      </button>
 
-      <motion.button
+      <button
         onClick={nextSlide}
-        className="hidden sm:block absolute right-4 md:right-6 top-1/2 -translate-y-1/2 bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white p-2 md:p-3 rounded-full transition-all duration-300 hover:scale-110"
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.95 }}
+        className="hidden sm:block absolute z-30 right-4 md:right-6 top-1/2 -translate-y-1/2 bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white p-2 md:p-3 rounded-full transition-all duration-300 hover:scale-110 active:scale-95"
         aria-label="Next slide"
       >
         <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
-      </motion.button>
+      </button>
 
       {/* Slide Indicators */}
-      <div className="absolute bottom-6 sm:bottom-8 left-1/2 -translate-x-1/2 flex space-x-2 sm:space-x-3">
+      <div className="absolute z-30 bottom-6 sm:bottom-8 left-1/2 -translate-x-1/2 flex space-x-2 sm:space-x-3">
         {carouselImages.map((_, index) => (
-          <motion.button
+          <button
             key={index}
             onClick={() => handleSlideClick(index)}
-            className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300 ${index === currentSlide ? 'bg-white' : 'bg-white/50'
-              }`}
-            whileHover={{ scale: 1.2 }}
-            whileTap={{ scale: 0.9 }}
+            className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300 hover:scale-125 active:scale-90 ${
+              index === currentSlide ? 'bg-white scale-110' : 'bg-white/50'
+            }`}
             aria-label={`Go to slide ${index + 1}`}
           />
         ))}
       </div>
 
-      {/* Touch/Swipe indicators for mobile */}
-      <div className="absolute bottom-16 left-1/2 -translate-x-1/2 sm:hidden">
+      <div className="absolute z-30 bottom-16 left-1/2 -translate-x-1/2 sm:hidden">
         <p className="text-white/60 text-xs">Swipe to navigate</p>
       </div>
     </section>
