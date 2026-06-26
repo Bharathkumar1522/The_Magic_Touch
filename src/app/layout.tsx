@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import '../index.css'
+import { SmoothScrollProvider } from '../components/SmoothScroll'
 
 export const metadata: Metadata = {
   title: 'Bhavani Akurathi - Bhavs Beauty Studio | Best Bridal Makeup Artist & Hairstylist in Vijayawada',
@@ -116,7 +117,9 @@ export default function RootLayout({
         />
       </head>
       <body>
-        <div id="root">{children}</div>
+        <SmoothScrollProvider>
+          <div id="root">{children}</div>
+        </SmoothScrollProvider>
       </body>
     </html>
   )

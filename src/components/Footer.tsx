@@ -20,7 +20,7 @@ export const Footer = memo(function Footer() {
       y: 30,
       duration: 0.8,
       stagger: 0.15,
-      ease: "power2.out"
+      ease: "expo.out"
     });
   }, { scope: footerRef });
 

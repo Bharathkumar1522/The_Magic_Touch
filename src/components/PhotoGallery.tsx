@@ -1,7 +1,5 @@
 import { useState, useCallback, useMemo, memo, useRef } from 'react';
-import { X, Filter, Heart, Calendar, MapPin, Clock } from 'lucide-react';
-import { Button } from './ui/button';
-import { Badge } from './ui/badge';
+import { X, Heart, MapPin, Clock, ArrowRight } from 'lucide-react';
 import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -138,230 +136,198 @@ export const PhotoGallery = memo(function PhotoGallery() {
   }, [selectedCategory]);
 
   useGSAP(() => {
-    // Header reveal
     gsap.from(".gallery-header", {
-      scrollTrigger: {
-        trigger: sectionRef.current,
-        start: "top 80%",
-        toggleActions: "play none none none"
-      },
-      opacity: 0,
-      y: 30,
-      duration: 1,
-      ease: "power3.out"
+      scrollTrigger: { trigger: sectionRef.current, start: "top 80%" },
+      opacity: 0, y: 40, duration: 1.8, ease: "expo.out"
     });
-
-    // Filters reveal
     gsap.from(".gallery-filters", {
-      scrollTrigger: {
-        trigger: sectionRef.current,
-        start: "top 75%",
-        toggleActions: "play none none none"
-      },
-      opacity: 0,
-      y: 20,
-      duration: 0.8,
-      delay: 0.2,
-      ease: "power2.out"
+      scrollTrigger: { trigger: sectionRef.current, start: "top 75%" },
+      opacity: 0, y: 20, duration: 1.6, ease: "expo.out"
     });
   }, { scope: sectionRef });
 
-  // Animate items when filter changes
   useGSAP(() => {
     gsap.fromTo(".gallery-item", 
-      { opacity: 0, scale: 0.95, y: 20 },
-      { 
-        opacity: 1, 
-        scale: 1, 
-        y: 0, 
-        duration: 0.5, 
-        stagger: 0.05, 
-        ease: "power2.out"
-      }
+      { opacity: 0, y: 40 },
+      { opacity: 1, y: 0, duration: 1.6, stagger: 0.1, ease: "expo.out" }
     );
   }, { dependencies: [filteredItems], scope: sectionRef });
 
-  // Modal Animation
   useGSAP(() => {
     if (selectedImage && modalRef.current) {
       gsap.fromTo(modalRef.current,
-        { opacity: 0, scale: 0.9, y: 20 },
-        { opacity: 1, scale: 1, y: 0, duration: 0.4, ease: "power3.out" }
+        { opacity: 0, y: 50 },
+        { opacity: 1, y: 0, duration: 0.6, ease: "expo.out" }
       );
       gsap.fromTo(".modal-backdrop",
         { opacity: 0 },
-        { opacity: 1, duration: 0.3 }
+        { opacity: 1, duration: 0.5, ease: "expo.out" }
       );
     }
   }, { dependencies: [selectedImage] });
 
   return (
-    <section ref={sectionRef} id="gallery" className="py-16 md:py-24 bg-gradient-to-b from-soft-blush to-cream">
-      <div className="container mx-auto px-4">
-        {/* Header */}
-        <div className="gallery-header text-center mb-8 md:mb-16 optimize-gpu">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl mb-4 md:mb-6 text-deep-maroon">
-            Gallery
-          </h2>
-          <p className="max-w-2xl mx-auto text-muted-foreground text-sm md:text-base px-4">
-            Discover our portfolio of beautiful transformations. Each look is carefully crafted
-            to enhance natural beauty and create unforgettable moments.
+    <section ref={sectionRef} id="gallery" className="py-24 md:py-32 bg-ivory">
+      <div className="max-w-[1400px] mx-auto px-4 md:px-8">
+        <div className="gallery-header flex flex-col md:flex-row justify-between items-start md:items-end mb-12 md:mb-24 gap-6 md:gap-8">
+          <div>
+            <p className="script-name text-3xl md:text-5xl text-[#c08267] mb-4 md:mb-6 tracking-wide">
+              Portfolio
+            </p>
+            <h2 className="text-4xl md:text-6xl font-light tracking-tight text-deep-maroon uppercase">
+              Our Work
+            </h2>
+          </div>
+          <p className="max-w-md text-deep-maroon/70 font-light leading-relaxed">
+            A curated selection of our finest bridal and editorial transformations. Each look is meticulously crafted to perfection.
           </p>
         </div>
 
-        {/* Filter Buttons */}
-        <div className="gallery-filters mb-8 md:mb-12 optimize-gpu">
-          <div className="flex items-center justify-center mb-4 md:hidden">
-            <Filter className="w-4 h-4 text-deep-maroon mr-2" />
-            <span className="text-sm text-deep-maroon">Filter by category</span>
-          </div>
-
-          <div className="md:hidden overflow-x-auto pb-2">
-            <div className="flex gap-3 px-4 min-w-max">
-              <Filter className="w-5 h-5 text-deep-maroon mr-2 hidden md:block" />
-              {categories.map((category) => (
-                <Button
-                  key={category.id}
-                  variant={selectedCategory === category.id ? "default" : "outline"}
-                  onClick={() => setSelectedCategory(category.id)}
-                  size="sm"
-                  className={`transition-all duration-300 whitespace-nowrap text-xs ${selectedCategory === category.id
-                    ? 'bg-deep-maroon text-ivory shadow-lg'
-                    : 'bg-transparent border-deep-maroon text-deep-maroon hover:bg-deep-maroon hover:text-ivory'
-                    }`}
-                >
-                  {category.label}
-                </Button>
-              ))}
-            </div>
-          </div>
-
-          <div className="hidden md:flex flex-wrap justify-center gap-4">
-            <Filter className="w-5 h-5 text-deep-maroon mr-2" />
-            {categories.map((category) => (
-              <Button
-                key={category.id}
-                variant={selectedCategory === category.id ? "default" : "outline"}
-                onClick={() => setSelectedCategory(category.id)}
-                className={`transition-all duration-300 ${selectedCategory === category.id
-                  ? 'bg-deep-maroon text-ivory shadow-lg'
-                  : 'bg-transparent border-deep-maroon text-deep-maroon hover:bg-deep-maroon hover:text-ivory'
-                  }`}
-              >
-                {category.label}
-              </Button>
-            ))}
-          </div>
+        <div className="gallery-filters flex overflow-x-auto md:flex-wrap snap-x gap-6 md:gap-12 mb-12 md:mb-24 border-b border-deep-maroon/10 pb-4 md:pb-6 scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+          {categories.map((category) => (
+            <button
+              key={category.id}
+              onClick={() => setSelectedCategory(category.id)}
+              className={`snap-start whitespace-nowrap pb-2 text-sm md:text-base tracking-widest uppercase transition-all duration-300 relative ${
+                selectedCategory === category.id
+                  ? 'text-deep-maroon font-medium'
+                  : 'text-deep-maroon/40 font-light hover:text-deep-maroon'
+              }`}
+            >
+              {category.label}
+              {selectedCategory === category.id && (
+                <div className="absolute bottom-[-17px] md:bottom-[-25px] left-0 w-full h-[1px] bg-deep-maroon"></div>
+              )}
+            </button>
+          ))}
         </div>
 
-        {/* Gallery Grid */}
-        <div className="gallery-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+        {/* Desktop View: Masonry Grid */}
+        <div className="hidden sm:block gallery-grid columns-2 lg:columns-3 xl:columns-4 gap-6 md:gap-8 space-y-6 md:space-y-8">
           {filteredItems.map((item) => (
             <div
               key={item.id}
-              className="gallery-item relative group cursor-pointer overflow-hidden rounded-lg lg:rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 optimize-gpu"
+              className="gallery-item relative group cursor-pointer overflow-hidden break-inside-avoid bg-soft-blush/20 rounded-sm"
               onClick={() => setSelectedImage(item)}
               onMouseEnter={() => preloadImage(item.image)}
             >
-              <div className="relative overflow-hidden aspect-[4/5]">
-                <img
-                  src={item.image.replace('/upload/', '/upload/w_800/')}
-                  alt={`${item.client} - ${item.style}`}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  loading="lazy"
-                  decoding="async"
-                />
-
-                <div className="absolute inset-0 bg-gradient-to-t from-deep-maroon/70 via-transparent to-transparent opacity-60 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300">
-                  <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 text-white">
-                    <h4 className="mb-1 sm:mb-2 text-sm sm:text-base">{item.client}</h4>
-                    <Badge variant="secondary" className="bg-white/20 text-white border-white/30 text-xs">
-                      {item.style}
-                    </Badge>
-                  </div>
+              <img
+                src={item.image.replace('/upload/', '/upload/w_800/')}
+                alt={`${item.client} - ${item.style}`}
+                className="w-full h-auto object-cover transition-transform duration-1000 group-hover:scale-105"
+                loading="lazy"
+                decoding="async"
+              />
+              <div className="absolute inset-0 bg-deep-maroon/0 group-hover:bg-deep-maroon/40 transition-colors duration-500"></div>
+              <div className="absolute inset-0 flex flex-col justify-end p-8 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                <p className="text-white/90 font-light text-xs uppercase tracking-[0.2em] mb-3">{item.category}</p>
+                <div className="flex items-end justify-between">
+                  <h4 className="text-white text-3xl font-light">{item.client}</h4>
+                  <ArrowRight className="text-white w-6 h-6 transform -translate-x-4 group-hover:translate-x-0 transition-transform duration-500" />
                 </div>
-
-                <Badge className="absolute top-3 left-3 bg-white/90 text-deep-maroon border-0 text-xs">
-                  {item.category}
-                </Badge>
               </div>
             </div>
           ))}
         </div>
 
-        {/* Modal */}
+        {/* Mobile View: Horizontal Swipe Carousel */}
+        <div className="sm:hidden flex overflow-x-auto snap-x snap-mandatory gap-4 pb-10 -mx-4 px-4 scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+          {filteredItems.map((item) => (
+            <div
+              key={item.id}
+              className="gallery-item flex-shrink-0 w-[80vw] snap-center relative group cursor-pointer overflow-hidden bg-soft-blush/20 rounded-sm shadow-xl shadow-black/5"
+              onClick={() => setSelectedImage(item)}
+            >
+              <div className="aspect-[3/4] w-full">
+                <img
+                  src={item.image.replace('/upload/', '/upload/w_600/')}
+                  alt={`${item.client} - ${item.style}`}
+                  className="w-full h-full object-cover"
+                  loading="lazy"
+                />
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-6 pt-12">
+                <p className="text-white/80 font-light text-[10px] uppercase tracking-[0.2em] mb-2">{item.category}</p>
+                <h4 className="text-white text-2xl font-light">{item.client}</h4>
+                <p className="text-white/60 text-xs mt-1">Tap to view details</p>
+              </div>
+            </div>
+          ))}
+        </div>
+        
+        {/* Mobile Swipe Indicator */}
+        <div className="sm:hidden flex justify-center items-center gap-2 mt-2 opacity-40">
+          <div className="w-1.5 h-1.5 rounded-full bg-deep-maroon"></div>
+          <div className="w-1.5 h-1.5 rounded-full bg-deep-maroon/30"></div>
+          <div className="w-1.5 h-1.5 rounded-full bg-deep-maroon/30"></div>
+          <span className="text-[10px] uppercase tracking-widest text-deep-maroon ml-2">Swipe Gallery</span>
+        </div>
+
         {selectedImage && (
           <div
-            className="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-2 md:p-4 bg-black/90 optimize-gpu"
+            className="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-0 md:p-8 bg-ivory/95 backdrop-blur-md"
             onClick={() => {
-              gsap.to(".modal-backdrop", { opacity: 0, duration: 0.3 });
-              gsap.to(modalRef.current, { scale: 0.9, y: 20, opacity: 0, duration: 0.3, onComplete: () => setSelectedImage(null) });
+              gsap.to(".modal-backdrop", { opacity: 0, duration: 0.4 });
+              gsap.to(modalRef.current, { y: 50, opacity: 0, duration: 0.4, onComplete: () => setSelectedImage(null) });
             }}
           >
             <div
               ref={modalRef}
-              className="relative bg-white rounded-xl md:rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] md:max-h-[85vh] flex flex-col overflow-hidden"
+              className="relative bg-white w-full h-full md:h-auto max-w-7xl md:max-h-[90vh] flex flex-col md:flex-row overflow-hidden shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
-              <Button
-                variant="outline"
-                size="icon"
-                className="absolute top-3 right-3 md:top-4 md:right-4 z-10 bg-white/90 hover:bg-white border-0 shadow-lg w-8 h-8 md:w-10 md:h-10 rounded-full"
+              <button
+                className="absolute top-6 right-6 z-10 text-deep-maroon/50 hover:text-deep-maroon transition-colors bg-white/80 md:bg-transparent backdrop-blur-sm md:backdrop-blur-none p-2 md:p-0 rounded-full"
                 onClick={() => {
-                  gsap.to(".modal-backdrop", { opacity: 0, duration: 0.3 });
-                  gsap.to(modalRef.current, { scale: 0.9, y: 20, opacity: 0, duration: 0.3, onComplete: () => setSelectedImage(null) });
+                  gsap.to(".modal-backdrop", { opacity: 0, duration: 0.4 });
+                  gsap.to(modalRef.current, { y: 50, opacity: 0, duration: 0.4, onComplete: () => setSelectedImage(null) });
                 }}
               >
-                <X className="w-5 h-5 text-deep-maroon" />
-              </Button>
+                <X className="w-6 h-6 md:w-8 md:h-8 font-light" />
+              </button>
 
-              <div className="flex-1 flex flex-col md:grid md:grid-cols-2 gap-0 overflow-y-auto min-h-0">
-                <div className="relative min-h-[50vh] md:min-h-0 bg-soft-blush/20 md:h-[85vh]">
-                  <img
-                    src={selectedImage.image.replace('/upload/', '/upload/w_1200/')}
-                    alt={`${selectedImage.client} - ${selectedImage.style}`}
-                    className="w-full h-full object-cover absolute inset-0"
-                    loading="eager"
-                  />
+              <div className="w-full md:w-3/5 h-[45vh] md:h-[90vh] relative bg-soft-blush/20 overflow-hidden">
+                <img
+                  src={selectedImage.image.replace('/upload/', '/upload/w_1600/')}
+                  alt={`${selectedImage.client} - ${selectedImage.style}`}
+                  className="w-full h-full object-cover"
+                  loading="eager"
+                />
+              </div>
+
+              <div className="w-full md:w-2/5 p-8 md:p-16 flex flex-col overflow-y-auto bg-white max-h-[55vh] md:max-h-none">
+                <div className="mb-10 md:mb-16">
+                  <p className="text-[#c08267] text-xs md:text-sm tracking-[0.2em] uppercase mb-4">{selectedImage.category}</p>
+                  <h3 className="text-deep-maroon text-4xl md:text-6xl font-light mb-6">{selectedImage.client}</h3>
+                  <div className="w-12 h-[1px] bg-deep-maroon/20 mb-8"></div>
+                  <p className="text-deep-maroon/70 leading-relaxed font-light text-base md:text-lg">
+                    {selectedImage.description}
+                  </p>
                 </div>
 
-                <div className="p-4 md:p-8 flex flex-col justify-between">
-                  <div>
-                    <div className="flex items-center gap-2 mb-3 md:mb-4">
-                      <Badge variant="outline" className="border-deep-maroon text-deep-maroon text-xs">
-                        {selectedImage.category}
-                      </Badge>
-                      <Heart className="w-4 h-4 text-rose-gold" />
-                    </div>
-                    <h3 className="text-deep-maroon mb-1 md:mb-2 text-lg md:text-xl">
-                      {selectedImage.client}
-                    </h3>
-                    <h4 className="text-dusty-rose mb-4 md:mb-6 text-sm md:text-base">
-                      {selectedImage.style} Style
-                    </h4>
-                    <p className="text-muted-foreground mb-6 md:mb-8 leading-relaxed text-sm md:text-base">
-                      {selectedImage.description}
-                    </p>
-                    <div className="space-y-3 md:space-y-4 mb-6 md:mb-8">
-                      <div className="flex items-center gap-3 text-xs md:text-sm text-muted-foreground">
-                        <MapPin className="w-4 h-4 text-deep-maroon flex-shrink-0" />
-                        <span>{selectedImage.location}</span>
-                      </div>
-                      <div className="flex items-center gap-3 text-xs md:text-sm text-muted-foreground">
-                        <Clock className="w-4 h-4 text-deep-maroon flex-shrink-0" />
-                        <span>{selectedImage.duration}</span>
-                      </div>
-                    </div>
+                <div className="space-y-6 mb-12">
+                  <div className="flex items-center gap-6 text-deep-maroon/70 font-light">
+                    <MapPin className="w-5 h-5 text-[#c08267]" />
+                    <span className="text-base md:text-lg">{selectedImage.location}</span>
                   </div>
-                  <div>
-                    <h5 className="text-xs md:text-sm mb-2 md:mb-3 text-deep-maroon">Tags</h5>
-                    <div className="flex flex-wrap gap-1.5 md:gap-2">
-                      {selectedImage.tags.map((tag) => (
-                        <Badge key={tag} variant="secondary" className="bg-soft-blush text-deep-maroon border-0 text-xs">
-                          {tag}
-                        </Badge>
-                      ))}
-                    </div>
+                  <div className="flex items-center gap-6 text-deep-maroon/70 font-light">
+                    <Clock className="w-5 h-5 text-[#c08267]" />
+                    <span className="text-base md:text-lg">{selectedImage.duration}</span>
+                  </div>
+                  <div className="flex items-center gap-6 text-deep-maroon/70 font-light">
+                    <Heart className="w-5 h-5 text-[#c08267]" />
+                    <span className="text-base md:text-lg">{selectedImage.style} Style</span>
+                  </div>
+                </div>
+
+                <div className="mt-auto pt-8 border-t border-deep-maroon/10">
+                  <h5 className="text-deep-maroon text-xs tracking-[0.2em] uppercase mb-6">Tags</h5>
+                  <div className="flex flex-wrap gap-3">
+                    {selectedImage.tags.map((tag) => (
+                      <span key={tag} className="border border-deep-maroon/20 text-deep-maroon/60 px-4 py-2 text-xs font-light uppercase tracking-widest hover:border-rose-gold hover:text-rose-gold transition-colors duration-300">
+                        {tag}
+                      </span>
+                    ))}
                   </div>
                 </div>
               </div>

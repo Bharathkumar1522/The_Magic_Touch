@@ -41,8 +41,8 @@ export function LoadingScreen({ isReady, onComplete }: LoadingScreenProps) {
       scale: 0.9,
       opacity: 0,
       y: 20,
-      duration: 1,
-      ease: "power3.out"
+      duration: 1.6,
+      ease: "expo.out"
     });
 
     gsap.from(".loader-info", {
@@ -50,7 +50,7 @@ export function LoadingScreen({ isReady, onComplete }: LoadingScreenProps) {
       y: 10,
       duration: 0.8,
       delay: 0.4,
-      ease: "power2.out"
+      ease: "expo.out"
     });
 
     // Floating particles animation
@@ -76,7 +76,7 @@ export function LoadingScreen({ isReady, onComplete }: LoadingScreenProps) {
       const tl = gsap.timeline();
       
       // First make the bar hit 100% smoothly
-      tl.to(barRef.current, { width: "100%", duration: 0.6, ease: "power2.out" })
+      tl.to(barRef.current, { width: "100%", duration: 0.6, ease: "expo.out" })
         // Then fade everything out
         .to(".loader-logo", { opacity: 0, y: -20, duration: 0.5, ease: "power2.in" })
         .to(".loader-info", { opacity: 0, duration: 0.3 }, "-=0.3")

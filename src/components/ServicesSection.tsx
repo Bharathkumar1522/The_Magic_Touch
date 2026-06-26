@@ -1,5 +1,3 @@
-import { Camera, Heart, Sparkles, Users } from 'lucide-react';
-import { Card, CardContent } from './ui/card';
 import { useRef } from 'react';
 import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
@@ -9,25 +7,21 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const services = [
   {
-    icon: Heart,
     title: "Bridal Makeup",
     description: "Complete bridal transformation including trial session. Specializing in HD, Airbrush, and Glass Skin finishes.",
     features: ["South Indian Bridal", "HD & Airbrush Makeup", "Contact Lens & Lashes", "On-Location Service"]
   },
   {
-    icon: Sparkles,
     title: "Party & Reception",
     description: "Glamorous looks for receptions, sangeet, and parties. We create the perfect glow for every special occasion.",
     features: ["Reception Look", "Sangeet Makeup", "Guest Makeup", "Evening Glamour"]
   },
   {
-    icon: Users,
     title: "Saree Draping",
     description: "Professional saree draping services for all styles including South Indian, Gujarati, and Modern drapes.",
     features: ["Bridal Saree Draping", "Pre-pleating Service", "Box-folding Service", "Multiple Styles"]
   },
   {
-    icon: Camera,
     title: "Hairstyling",
     description: "Expert hairstyling including traditional poolajada, messy buns, braids, and flower adornment.",
     features: ["Traditional Poolajada", "Modern Buns & Braids", "Flower Decoration", "Hair Extensions"]
@@ -44,100 +38,86 @@ export function ServicesSection() {
       { 
         scale: 1, 
         opacity: 1, 
-        duration: 1.5, 
-        ease: "power2.out",
+        duration: 1.8, 
+        ease: "expo.out",
         scrollTrigger: {
           trigger: sectionRef.current,
           start: "top 80%",
-          toggleActions: "play none none none"
         }
       }
     );
 
     // Header reveal
     gsap.from(".services-header", {
-      scrollTrigger: {
-        trigger: sectionRef.current,
-        start: "top 75%",
-        toggleActions: "play none none none"
-      },
-      opacity: 0,
-      y: 30,
-      duration: 1,
-      stagger: 0.15,
-      ease: "power3.out"
+      scrollTrigger: { trigger: sectionRef.current, start: "top 80%" },
+      opacity: 0, y: 40, duration: 1.8, stagger: 0.15, ease: "expo.out"
     });
 
-    // Cards reveal
-    gsap.from(".service-card", {
-      scrollTrigger: {
-        trigger: ".services-grid",
-        start: "top 80%",
-        toggleActions: "play none none none"
-      },
-      opacity: 0,
-      y: 50,
-      duration: 0.8,
-      stagger: 0.15,
-      ease: "back.out(1.5)"
+    // List items reveal
+    gsap.from(".service-row", {
+      scrollTrigger: { trigger: ".services-list", start: "top 80%" },
+      opacity: 0, y: 30, duration: 1.8, stagger: 0.15, ease: "expo.out"
     });
   }, { scope: sectionRef });
 
   return (
-    <section ref={sectionRef} id="services" className="relative py-16 md:py-24 px-4 md:px-6 overflow-hidden">
-      {/* Background Image */}
-      <div className="services-bg absolute inset-0 z-0 optimize-gpu">
+    <section ref={sectionRef} id="services" className="relative py-24 md:py-32 px-4 md:px-8 bg-deep-maroon overflow-hidden">
+      
+      {/* Background Image - Dark Mood */}
+      <div className="services-bg absolute inset-0 z-0">
         <img
           src="https://res.cloudinary.com/dyecmgvcy/image/upload/f_auto,q_auto,w_1920/v1767937417/Magictouch/DSC04820_tck5ao.webp"
           alt="Background"
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover opacity-20 mix-blend-luminosity"
           loading="lazy"
         />
-        <div className="absolute inset-0 bg-cream/70" />
+        <div className="absolute inset-0 bg-gradient-to-b from-deep-maroon/95 via-deep-maroon/85 to-deep-maroon/95" />
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto">
-        <div className="text-center mb-12 md:mb-16 optimize-gpu">
-          <h2 className="services-header text-3xl md:text-4xl lg:text-5xl mb-4 md:mb-6 text-deep-maroon drop-shadow-sm">
+      <div className="relative z-10 max-w-[1200px] mx-auto">
+        {/* Top Header */}
+        <div className="text-center mb-20 md:mb-28">
+          <h2 className="services-header text-4xl md:text-5xl lg:text-6xl font-light tracking-tight text-white mb-6 uppercase">
             Our Services
           </h2>
-          <p className="services-header text-base md:text-lg text-deep-maroon/80 max-w-2xl mx-auto px-2">
+          <div className="services-header w-16 h-[1px] bg-[#c08267] mx-auto mb-8"></div>
+          <p className="services-header text-lg md:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed font-light">
             From your wedding day to special occasions, we create stunning looks that make every moment memorable and picture-perfect.
           </p>
         </div>
 
-        <div className="services-grid grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+        {/* Typographic List */}
+        <div className="services-list border-t border-rose-gold/20">
           {services.map((service, index) => (
-            <div key={index} className="service-card h-full optimize-gpu">
-              <Card
-                className="h-full bg-white/90 backdrop-blur-sm border-rose-gold/30 hover:border-rose-gold hover:shadow-lg transition-all duration-300 group"
-              >
-                <CardContent className="p-6 md:p-8">
-                  <div className="flex flex-col sm:flex-row sm:items-start sm:space-x-4 space-y-4 sm:space-y-0">
-                    <div className="flex-shrink-0 self-center sm:self-start">
-                      <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-blush-pink to-rose-gold rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                        <service.icon className="w-7 h-7 sm:w-8 sm:h-8 text-deep-maroon" />
-                      </div>
-                    </div>
-                    <div className="flex-1 text-center sm:text-left">
-                      <h3 className="text-lg sm:text-xl mb-3 text-deep-maroon">
-                        {service.title}
-                      </h3>
-                      <p className="text-sm sm:text-base text-deep-maroon/70 mb-4 leading-relaxed">
-                        {service.description}
-                      </p>
-                      <ul className="space-y-2">
-                        {service.features.map((feature, featureIndex) => (
-                          <li key={featureIndex} className="flex items-center justify-center sm:justify-start text-sm sm:text-base text-deep-maroon/60">
-                            <div className="w-1.5 h-1.5 bg-rose-gold rounded-full mr-3 flex-shrink-0" />
-                            {feature}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+            <div 
+              key={index} 
+              className="service-row group flex flex-col md:flex-row md:items-start py-12 md:py-16 border-b border-rose-gold/20 transition-colors duration-500 hover:bg-white/[0.03] px-4 md:px-8 -mx-4 md:-mx-8 rounded-sm"
+            >
+              {/* Left Column: Number & Title */}
+              <div className="w-full md:w-5/12 pr-8 mb-8 md:mb-0 flex gap-6 md:gap-8 items-start">
+                <span className="text-2xl md:text-3xl font-serif text-[#c08267] italic mt-1 md:mt-2">
+                  0{index + 1}
+                </span>
+                <h3 className="text-3xl md:text-4xl lg:text-5xl font-light text-white tracking-wide group-hover:text-rose-gold transition-colors duration-500">
+                  {service.title}
+                </h3>
+              </div>
+
+              {/* Right Column: Details */}
+              <div className="w-full md:w-7/12 md:pl-8 lg:pl-16">
+                <p className="text-white/90 text-lg md:text-xl leading-relaxed font-light mb-8 max-w-xl">
+                  {service.description}
+                </p>
+                
+                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6">
+                  {service.features.map((feature, featureIndex) => (
+                    <li key={featureIndex} className="flex items-center text-base md:text-lg text-white/70 font-light group-hover:text-white/90 transition-colors duration-500">
+                      <span className="w-1.5 h-1.5 bg-[#c08267]/50 rounded-full mr-4 flex-shrink-0 group-hover:bg-[#c08267] transition-colors duration-500" />
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           ))}
         </div>

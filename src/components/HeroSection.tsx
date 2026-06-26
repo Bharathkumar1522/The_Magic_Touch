@@ -55,31 +55,48 @@ export function HeroSection() {
     }
   }, []);
 
+  const [startAnimation, setStartAnimation] = useState(false);
+
   useEffect(() => {
-    if (!isAutoPlaying) return;
+    const handleLoaderComplete = () => setStartAnimation(true);
+    window.addEventListener('loaderComplete', handleLoaderComplete);
+    
+    // Fallback just in case loader was already complete before this mounted
+    const fallbackTimer = setTimeout(() => setStartAnimation(true), 2000);
+
+    return () => {
+      window.removeEventListener('loaderComplete', handleLoaderComplete);
+      clearTimeout(fallbackTimer);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!isAutoPlaying || !startAnimation) return;
     const interval = setInterval(nextSlide, 5000);
     return () => clearInterval(interval);
-  }, [nextSlide, isAutoPlaying]);
+  }, [nextSlide, isAutoPlaying, startAnimation]);
 
   // GSAP Animations
   useGSAP(() => {
+    if (!startAnimation) return;
+
     const tl = gsap.timeline();
     
     // Animate the initial background image scale for a premium feel
     tl.fromTo(`.hero-bg-0 img`,
       { scale: 1.15 },
-      { scale: 1, duration: 3, ease: "power2.out" }
+      { scale: 1, duration: 3, ease: "expo.out" }
     );
 
     // Initial Load Animation for text
     tl.fromTo(".hero-main-text", 
-      { opacity: 0, y: 50, filter: "blur(4px)" }, 
-      { opacity: 1, y: 0, filter: "blur(0px)", duration: 1.2, ease: "power4.out" },
+      { opacity: 0, y: 50 }, 
+      { opacity: 1, y: 0, duration: 1.8, ease: "expo.out" },
       "-=2.5"
     )
     .fromTo(".hero-btn", 
       { opacity: 0, y: 20 }, 
-      { opacity: 1, y: 0, duration: 0.8, ease: "back.out(1.7)" }, 
+      { opacity: 1, y: 0, duration: 1.8, ease: "expo.out" }, 
       "-=1.8"
     );
   }, { scope: containerRef });
@@ -91,12 +108,12 @@ export function HeroSection() {
     // Animate the background image fade and scale
     gsap.fromTo(`.hero-bg-${currentSlide}`, 
       { opacity: 0, zIndex: 10 },
-      { opacity: 1, duration: 1.5, ease: "power2.out", zIndex: 10 }
+      { opacity: 1, duration: 1.5, ease: "expo.out", zIndex: 10 }
     );
     
     gsap.fromTo(`.hero-bg-${currentSlide} img`,
       { scale: 1.1 },
-      { scale: 1, duration: 4, ease: "power2.out" }
+      { scale: 1, duration: 4, ease: "expo.out" }
     );
     
     // Hide previous slide after new one fades in
@@ -112,8 +129,8 @@ export function HeroSection() {
 
     // Animate subtitle text change
     gsap.fromTo(".hero-subtitle",
-      { opacity: 0, y: 15, filter: "blur(2px)" },
-      { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.8, ease: "power3.out" }
+      { opacity: 0, y: 15 },
+      { opacity: 1, y: 0, duration: 0.8, ease: "expo.out" }
     );
 
   }, { dependencies: [currentSlide], scope: containerRef });

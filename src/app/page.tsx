@@ -63,25 +63,26 @@ export default function Page() {
         {!isLoadingComplete && (
           <LoadingScreen
             isReady={isReady}
-            onComplete={() => setIsLoadingComplete(true)}
+            onComplete={() => {
+              setIsLoadingComplete(true);
+              window.dispatchEvent(new Event('loaderComplete'));
+            }}
           />
         )}
 
-        {isLoadingComplete && (
-          <div>
-            <Navbar />
-            <div id="home">
-              <HeroSection />
-            </div>
-            <SignatureStyles />
-            <ServicesSection />
-            <PhotoGallery />
-            <TestimonialsSection />
-            <ContactSection />
-            <Footer />
-            <BackToTop />
+        <div style={{ visibility: isReady ? 'visible' : 'hidden' }}>
+          <Navbar />
+          <div id="home">
+            <HeroSection />
           </div>
-        )}
+          <SignatureStyles />
+          <ServicesSection />
+          <PhotoGallery />
+          <TestimonialsSection />
+          <ContactSection />
+          <Footer />
+          <BackToTop />
+        </div>
       </div>
     </ReactLenis>
   );

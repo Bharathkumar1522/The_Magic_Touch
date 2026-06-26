@@ -42,7 +42,6 @@ export function TestimonialsSection() {
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const sectionRef = useRef<HTMLElement>(null);
-  const cardRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const prevTestimonialRef = useRef(currentTestimonial);
 
@@ -65,31 +64,13 @@ export function TestimonialsSection() {
   };
 
   useGSAP(() => {
-    // Reveal Header
     gsap.from(".testimonials-header", {
-      scrollTrigger: {
-        trigger: sectionRef.current,
-        start: "top 80%",
-        toggleActions: "play none none none"
-      },
-      opacity: 0,
-      y: 30,
-      duration: 1,
-      stagger: 0.15,
-      ease: "power3.out"
+      scrollTrigger: { trigger: sectionRef.current, start: "top 80%" },
+      opacity: 0, y: 40, duration: 1.8, stagger: 0.15, ease: "expo.out"
     });
-
-    // Reveal Card container
-    gsap.from(cardRef.current, {
-      scrollTrigger: {
-        trigger: sectionRef.current,
-        start: "top 75%",
-        toggleActions: "play none none none"
-      },
-      opacity: 0,
-      scale: 0.95,
-      duration: 1,
-      ease: "power2.out"
+    gsap.from(contentRef.current, {
+      scrollTrigger: { trigger: sectionRef.current, start: "top 70%" },
+      opacity: 0, y: 50, duration: 1.8, ease: "expo.out"
     });
   }, { scope: sectionRef });
 
@@ -97,93 +78,106 @@ export function TestimonialsSection() {
     if (prevTestimonialRef.current === currentTestimonial) return;
 
     const ctx = gsap.context(() => {
-      // Crossfade logic: animate out, set state content, animate in
-      const direction = currentTestimonial > prevTestimonialRef.current ? -10 : 10;
+      const direction = currentTestimonial > prevTestimonialRef.current ? -20 : 20;
       
-      gsap.fromTo(contentRef.current, 
-        { opacity: 0, y: direction, filter: "blur(4px)" },
-        { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.4, ease: "power2.out" }
+      gsap.fromTo(".testimonial-image", 
+        { opacity: 0, scale: 0.95 },
+        { opacity: 1, scale: 1, duration: 0.8, ease: "expo.out" }
       );
-    });
+      gsap.fromTo(".testimonial-text", 
+        { opacity: 0, y: direction },
+        { opacity: 1, y: 0, duration: 0.8, ease: "expo.out", delay: 0.1 }
+      );
+    }, contentRef);
 
     prevTestimonialRef.current = currentTestimonial;
     return () => ctx.revert();
   }, { dependencies: [currentTestimonial] });
 
   return (
-    <section ref={sectionRef} id="testimonials" className="py-16 md:py-24 px-4 md:px-6 bg-gradient-to-b from-soft-blush to-champagne overflow-hidden">
-      <div className="max-w-5xl mx-auto">
-        <div className="text-center mb-16 optimize-gpu">
-          <h2 className="testimonials-header text-4xl md:text-5xl mb-6 text-deep-maroon">
+    <section ref={sectionRef} id="testimonials" className="py-24 md:py-32 px-4 md:px-8 bg-deep-maroon overflow-hidden">
+      <div className="max-w-[1400px] mx-auto">
+        <div className="text-center mb-16 md:mb-24">
+          <p className="testimonials-header script-name text-3xl md:text-5xl text-rose-gold mb-6 tracking-wide">
+            Love Notes
+          </p>
+          <h2 className="testimonials-header text-4xl md:text-6xl font-light tracking-tight text-white uppercase">
             What Our Brides Say
           </h2>
-          <p className="testimonials-header text-lg text-deep-maroon/80 max-w-2xl mx-auto">
-            Every bride deserves to feel radiant and confident. Here's what our beautiful brides have to say about their experience with us.
-          </p>
         </div>
 
-        <div className="relative">
-          <div ref={cardRef} className="bg-white/70 backdrop-blur-sm rounded-3xl p-8 md:p-12 shadow-xl overflow-hidden min-h-[300px] flex items-center optimize-gpu">
+        <div ref={contentRef} className="relative max-w-6xl mx-auto flex flex-col lg:flex-row items-center gap-12 lg:gap-24">
+          {/* Large decorative quote mark */}
+          <div className="absolute top-[-50px] left-[-20px] lg:left-[-50px] text-[150px] lg:text-[250px] text-white/5 font-serif leading-none z-0 select-none">
+            "
+          </div>
+
+          <div className="w-full lg:w-1/2 relative z-10 flex justify-center lg:justify-end">
+            <div className="testimonial-image relative w-[280px] h-[350px] md:w-[400px] md:h-[500px] overflow-hidden rounded-sm group shadow-2xl shadow-black/20">
+              <ImageWithFallback
+                src={testimonials[currentTestimonial].image}
+                alt={testimonials[currentTestimonial].name}
+                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+                loading="lazy"
+              />
+              <div className="absolute inset-0 bg-deep-maroon/20 mix-blend-overlay transition-opacity duration-500 group-hover:opacity-0"></div>
+            </div>
             
-            <div ref={contentRef} className="flex flex-col md:flex-row items-center gap-8 w-full optimize-gpu">
-              <div className="flex-shrink-0">
-                <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-rose-gold/30">
-                  <ImageWithFallback
-                    src={testimonials[currentTestimonial].image}
-                    alt={testimonials[currentTestimonial].name}
-                    className="w-full h-full object-cover"
-                    loading="lazy"
-                  />
-                </div>
+            {/* Nav Buttons overlaying image area */}
+            <div className="absolute bottom-[-24px] left-1/2 -translate-x-1/2 lg:left-auto lg:-translate-x-0 lg:-right-6 flex gap-4 z-20">
+              <button
+                onClick={prevTestimonial}
+                className="w-14 h-14 flex items-center justify-center bg-white text-deep-maroon rounded-full shadow-xl hover:bg-rose-gold hover:text-white transition-all duration-300 group border border-deep-maroon/5"
+              >
+                <ChevronLeft className="w-6 h-6 group-hover:-translate-x-1 transition-transform" />
+              </button>
+              <button
+                onClick={nextTestimonial}
+                className="w-14 h-14 flex items-center justify-center bg-white text-deep-maroon rounded-full shadow-xl hover:bg-rose-gold hover:text-white transition-all duration-300 group border border-deep-maroon/5"
+              >
+                <ChevronRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+              </button>
+            </div>
+          </div>
+
+          <div className="w-full lg:w-1/2 relative z-10 pt-8 lg:pt-0">
+            <div className="testimonial-text text-center lg:text-left">
+              <div className="flex justify-center lg:justify-start mb-8 gap-1.5">
+                {[...Array(testimonials[currentTestimonial].rating)].map((_, i) => (
+                  <Star key={i} className="w-5 h-5 fill-rose-gold text-rose-gold" />
+                ))}
               </div>
-              <div className="flex-1 text-center md:text-left">
-                <div className="flex justify-center md:justify-start mb-4">
-                  {[...Array(testimonials[currentTestimonial].rating)].map((_, i) => (
-                    <Star key={i} className="w-5 h-5 fill-rose-gold text-rose-gold" />
-                  ))}
-                </div>
-                <blockquote className="text-lg md:text-xl text-deep-maroon/90 mb-6 leading-relaxed italic">
-                  "{testimonials[currentTestimonial].text}"
-                </blockquote>
-                <div>
-                  <h4 className="font-medium text-deep-maroon">
-                    {testimonials[currentTestimonial].name}
-                  </h4>
-                  <p className="text-deep-maroon/60">
-                    {testimonials[currentTestimonial].role}
-                  </p>
-                </div>
+              
+              <blockquote className="text-2xl md:text-3xl lg:text-4xl text-white font-light leading-relaxed mb-12">
+                "{testimonials[currentTestimonial].text}"
+              </blockquote>
+              
+              <div className="flex flex-col items-center lg:items-start">
+                <div className="w-12 h-[1px] bg-rose-gold mb-6"></div>
+                <h4 className="text-xl md:text-2xl text-white uppercase tracking-widest font-light mb-2">
+                  {testimonials[currentTestimonial].name}
+                </h4>
+                <p className="text-white/50 uppercase tracking-[0.2em] text-xs md:text-sm">
+                  {testimonials[currentTestimonial].role}
+                </p>
               </div>
             </div>
-
           </div>
+        </div>
 
-          <button
-            onClick={prevTestimonial}
-            className="absolute left-0 md:-left-6 top-1/2 -translate-y-1/2 bg-white/80 backdrop-blur-sm hover:bg-white text-deep-maroon p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110 active:scale-95"
-          >
-            <ChevronLeft className="w-5 h-5" />
-          </button>
-          <button
-            onClick={nextTestimonial}
-            className="absolute right-0 md:-right-6 top-1/2 -translate-y-1/2 bg-white/80 backdrop-blur-sm hover:bg-white text-deep-maroon p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110 active:scale-95"
-          >
-            <ChevronRight className="w-5 h-5" />
-          </button>
-
-          <div className="flex justify-center mt-8 space-x-3">
-            {testimonials.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => {
-                  setCurrentTestimonial(index);
-                  setIsAutoPlaying(false);
-                }}
-                className={`w-3 h-3 rounded-full transition-all duration-300 hover:scale-125 ${index === currentTestimonial ? 'bg-rose-gold scale-125' : 'bg-rose-gold/40'
-                  }`}
-              />
-            ))}
-          </div>
+        <div className="flex justify-center mt-24 gap-4">
+          {testimonials.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => {
+                setCurrentTestimonial(index);
+                setIsAutoPlaying(false);
+              }}
+              className={`transition-all duration-500 ease-out h-[1px] ${
+                index === currentTestimonial ? 'w-16 bg-white' : 'w-8 bg-white/20 hover:bg-white/40'
+              }`}
+            />
+          ))}
         </div>
       </div>
     </section>

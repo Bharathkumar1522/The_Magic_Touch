@@ -70,13 +70,13 @@ export const Navbar = memo(function Navbar() {
       gsap.to(menuRef.current, {
         height: "auto",
         duration: 0.4,
-        ease: "power3.out",
+        ease: "expo.out",
         display: "block"
       });
       
       gsap.fromTo(".mobile-nav-link", 
         { opacity: 0, x: -20 },
-        { opacity: 1, x: 0, duration: 0.3, stagger: 0.05, ease: "power2.out", delay: 0.1 }
+        { opacity: 1, x: 0, duration: 0.3, stagger: 0.05, ease: "expo.out", delay: 0.1 }
       );
     } else {
       gsap.to(menuRef.current, {
